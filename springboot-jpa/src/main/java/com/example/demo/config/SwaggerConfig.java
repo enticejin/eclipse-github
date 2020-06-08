@@ -28,7 +28,7 @@ public class SwaggerConfig {
 		return new ApiInfoBuilder()
 				.title("springboot api doc")
 				.description("this is a restful api of springboot")
-				.version("1.0")
+				.version("2.0")
 				.build();
 	}
 }
