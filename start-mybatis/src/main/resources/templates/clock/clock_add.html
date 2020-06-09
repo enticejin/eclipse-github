@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+	<div th:if="${flag} == 'add' ">
+		<div class="input-group input-group-lg">
+		  <span align="right" class="input-group-addon" id="sizing-addon1">时钟源名称：</span>
+		  <input type="text" class="form-control" id="clockName" name="clockName" placeholder="时钟源名称" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg">
+		  <span class="input-group-addon" id="sizing-addon1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x坐标：</span>
+		  <input type="text" class="form-control" id="x" name="x" placeholder="0" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg">
+		  <span class="input-group-addon" id="sizing-addon1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y坐标：</span>
+		  <input type="text" class="form-control" id="y" name="y" placeholder="0" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg">
+		  <span class="input-group-addon" id="sizing-addon1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z坐标：</span>
+		  <input type="text" class="form-control" id="z" name="z" placeholder="0" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg">
+			&nbsp;&nbsp;&nbsp;是否在线：<input  type="checkbox" id="zcheckbox" name="online" />
+		</div>
+	</div>
+	<div th:if="${flag} != 'add' ">
+		<input type="hidden" th:value="${clock.id}" id="clockId">
+		<div class="input-group input-group-lg">
+		  <span align="right" class="input-group-addon" id="sizing-addon1">时钟源名称：</span>
+		  <input type="text" class="form-control" id="clockName" name="clockName" th:value="${clock.clockName}" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg">
+		  <span class="input-group-addon" id="sizing-addon1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x坐标：</span>
+		  <input type="text" class="form-control" id="x" name="x" th:value="${clock.x}" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg">
+		  <span class="input-group-addon" id="sizing-addon1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y坐标：</span>
+		  <input type="text" class="form-control" id="y" name="y" th:value="${clock.y}" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg">
+		  <span class="input-group-addon" id="sizing-addon1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;z坐标：</span>
+		  <input type="text" class="form-control" id="z" name="z" th:value="${clock.z}" aria-describedby="sizing-addon1">
+		</div>
+		<div class="input-group input-group-lg" th:if="${clock.online} == 'true'">
+			是否在线：<input checked="checked" type="checkbox" id="zcheckbox" name="online" />
+		</div>
+		<div class="input-group input-group-lg" th:if="${clock.online} != 'true'">
+			是否在线：<input type="checkbox" id="zcheckbox" name="online" />
+		</div>
+	</div>
+<!-- jQuery 2.2.3 -->
+<script th:src="@{'/static/staticres/js/jquery-2.2.3.min.js'}"></script>
+<script th:src="@{'/static/staticres/test/jquery.js'}"></script>	
+	<!--引入弹窗组件start-->
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>	
+<script type="text/javascript">
+	function save(){
+		var flag = '[[${flag}]]';
+		var $isChecked = $("#zcheckbox").is(":checked");
+		$("#zcheckbox").val($isChecked)
+		if(validate() == 'yes'){
+			if(flag == 'add'){
+			var clockName = document.getElementById("clockName").value;
+			var x = document.getElementById("x").value;
+			var y = document.getElementById("y").value;
+			var z = document.getElementById("z").value;
+			var online = $("#zcheckbox").val();
+			var data = {};
+			data.x = x;
+			data.y = y;
+			data.z = z;
+			data.flag = flag;
+			data.clockName = clockName;
+			data. online = online;
+			$.ajax({
+				url:"save",
+				data: JSON.stringify(data),
+				type:"post",
+				contentType:"application/json;charset=utf-8",
+				success: function(msg){
+				}
+			});
+			}else if(flag == 'update'){
+				var clockName = document.getElementById("clockName").value;
+				var id = document.getElementById("clockId").value;
+				var x = document.getElementById("x").value;
+				var y = document.getElementById("y").value;
+				var z = document.getElementById("z").value;
+				var online = $("#zcheckbox").val();
+				var data = {};
+				data.id = id;
+				data.x = x;
+				data.y = y;
+				data.z = z;
+				data.flag = flag;
+				data.clockName = clockName;
+				data. online = online;
+				$.ajax({
+					url:"save",
+					data: JSON.stringify(data),
+					type:"post",
+					contentType:"application/json;charset=utf-8",
+					success: function(msg){
+						var msg = msg.msg;
+						if(msg == "success"){
+							window.top.clockConfig();
+						}
+					}
+				});
+			}
+		}else{
+			Dialog.alert("输入有误，请检查后重新输入！")
+		}
+	}
+	//判断输入的值
+	function validate(){
+		var clockName = document.getElementById("clockName").value;
+		var x = document.getElementById("x").value;
+		var y = document.getElementById("y").value;
+		var z = document.getElementById("z").value;
+		if(judgeValue(clockName) == "false" ||judgeValue(x) == "false" || judgeValue(y) == "false" || judgeValue(z) == "false"){
+			return "no";
+		}else
+			return "yes";
+	}
+	//为判断输入的值提供方法
+	function judgeValue(value){
+		if(value == "" || value == null){
+			return "false";
+		}
+	}
+</script>
+</body>
+</html>

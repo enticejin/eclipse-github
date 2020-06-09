@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="expires" content="0">
+<title>系统登录</title>
+<!-- 自定义主题样式加载 -->
+<link rel="stylesheet" th:href="@{'/static/staticres/css/loginindex.css'}"/>
+<!--引入弹窗组件start-->
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>	
+</head>
+	<body class="hold-transition login-page jl_loginindexbg">
+	<div class="jl_loginindexbgimg">
+		<div class="jl_login-box">
+			<div class="jl_loginmain">
+				<div style="background:;width:621px;height:45px;margin-top: 254px;margin-left:33px;float:left">
+					<form  method="post" id="loginForm">
+						<!-- 用户名 -->
+						<div class="jl_userNameInput">
+							<input id="loginUserName" name="userName" type="text" value="" placeholder="用户名" />
+						</div>
+						<!-- 密码 -->
+						<div class="jl_userPwdInput">
+							<input id="loginPassword" name="passWord" type="password" value="" placeholder="密码" class="jl_pwdinput"  />
+						</div>
+						<!-- 验证码 显示-->
+						<div class="jl_verificationCodeshow">
+							
+						</div>
+						<!-- 验证码 输入-->
+						<div class="jl_verificationCode">
+							<input id="loginValidCode" name="validCode" type="text" placeholder="验证码" class="jl_verificationCodeinput" style="line-height:23px"  />
+						</div>
+						<!-- 登录按钮 -->
+						<div class="jl_btnloginContener" onclick="login()">
+							<!-- <input id="loginValidCode" name="validCode" type="button" /> -->
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- jQuery 2.2.3 -->
+	<script th:src="@{'/static/staticres/js/jquery-2.2.3.min.js'}"></script>
+	<script th:src="@{'/static/staticres/test/jquery.js'}"></script>
+	<script>
+	//删除校验数据
+	$(function(){
+			var strUrl=window.location.href;
+			var arrUrl=strUrl.split("/");
+			var strPage=arrUrl[arrUrl.length-1];
+			if(strPage.indexOf("login.jsp;JSESSIONID")>=0){
+				window.top.location.href="/template/login.html";
+			} 
+			$("body").keydown(function() {
+	            if (event.keyCode == "13") {//keyCode=13是回车键
+	            	login();
+	            }
+	        });
+			
+			
+			
+		})
+	//登录，异步提交表单
+	function login(){
+		var valiFlag = validate();
+	    var d = {};
+	    d.password = $("#loginPassword").val();
+	    d.userName = $("#loginUserName").val();
+	    if(valiFlag == "OK"){
+	    	$.ajax({
+		        url: "/loginDo",
+		        data: JSON.stringify(d),
+		        //type、contentType必填,指明传参方式
+		        type: "POST",
+		        contentType: "application/json;charset=utf-8",
+		        success: function(data){
+		        	var msg = data.msg;
+		        //前端调用成功后，可以处理后端传回的json格式数据。
+		        if(msg == "success"){
+		        	//登陆成功跳转到首页
+					window.location = 'index';
+		        }
+		        else{
+		        	Dialog.confirm("用户名或密码错误！"); 
+		        }
+		    }
+		    });
+	    }else{
+	    	Dialog.confirm("用户名或密码不能为空！");
+	    }
+	}
+		////验证用户名和密码是否为空
+		function validate(){
+			var loginName = $("#loginUserName").val();
+			var loginPassword = $("#loginPassword").val();
+			var loginValidCode = $("#loginValidCode").val();
+			//验证用户名是否为空
+			if(loginName == null || loginName == "" || loginName == undefined){
+				$("#loginName").focus();
+				return "用户名不能为空！";
+			}
+			//验证密码是否为空
+			if(loginPassword == null || loginPassword == "" || loginPassword == undefined){
+				$("#loginPassword").focus();
+				return "用户名不能为空！";
+			}
+			return "OK";
+		}
+	</script>
+</body>
+</html>

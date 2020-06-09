@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_header :: common_header(~{::title},~{::link},~{})">
+<meta charset="UTF-8">
+<link rel="stylesheet" th:href="@{'/static/staticres/test/jquery-ui.css'}" />
+<link rel="stylesheet" th:href="@{'/static/staticres/test/test.css'}" />
+<title>时钟源配置</title>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+	
+	<div class="container-fluid" style="padding:10px 23px 10px 23px;">
+		<!-- 检索  -->
+		<form action="clockList" method="post" name="Form" id="Form">
+			<div class="row table-query">
+				<table>
+					<tr>
+						<td><input class="form-control input-sm"  id="nav-search-input" type="text" name="NAME" value="" placeholder="时钟源名称" /></td>
+						<td><a class="btn btn-block btn-default btn-sm btn-flat" onclick="query();" title="检索"><i class="fa fa-search" style="color: #3C8DBC;"></i></a></td>
+					</tr>
+				</table>
+			</div>
+			</form>
+			
+			
+		<div class="row" >
+				<table id="table_report" class="table table-striped table-condensed table-bordered table-hover" style="margin:5px 0px 0px 2px;">
+					<thead>
+						<tr>
+							<th><input  type="checkbox" id="zcheckbox" /></th>
+							<th>时钟编号</th>
+							<th>时钟名称</th>
+							<th>序列号</th>
+							<th>X坐标</th>
+							<th>Y坐标</th>
+							<th>Z坐标</th>
+							<td>状态</td>
+							<th style="text-align: center; width:200px;">操作</th>
+						</tr>
+					</thead>
+					<tbody th:if="${flag == 'clock'}">
+								<tr th:each="clock:${clockList}">
+											<td><input type='checkbox' name='ids' th:value="${clock.id}"></td>
+											<td th:text="${clock.serialNo}"></td>
+											<td th:text="${clock.clockName}"></td>
+											<td th:text="${clock.colockId}"></td>
+											<td th:id="${clock.colockId}" th:text="${clock.x}"></td>
+											<td th:id="${clock.colockId}" th:text="${clock.y}"></td>
+											<td th:id="${clock.colockId}" th:text="${clock.z}"></td>
+											<td th:if="${clock.online} == 'true'">
+												<span>在线</span>
+											</td>
+											<td th:if="${clock.online} != 'true'">
+												<span>离线</span>
+											</td>
+											
+											
+									<td style="width: 150px;text-align: center;">
+										
+										<button type="button" class="btn bg-purple btn-xs btn-flat" th:onclick="'javascript:setXYZ('+${clock.id}+')'">修改坐标</button>
+										<a class="btn btn-social-icon btn-danger btn-xs btn-flat" title="删除" th:onclick="'javascript:del('+${clock.id}+')'"><i class="fa fa-trash"></i></a>
+									</td>
+								</tr>
+						</tbody>
+					<tbody th:if="${flag != 'clock'}">
+								<tr th:each="clock:${clockListSelect}">
+											<td><input type='checkbox' name='ids' th:value="${clock.id}"></td>
+											<td th:text="${clock.serialNo}"></td>
+											<td th:text="${clock.clockName}"></td>
+											<td th:text="${clock.colockId}"></td>
+											<td th:id="${clock.colockId}" th:text="${clock.x}"></td>
+											<td th:id="${clock.colockId}" th:text="${clock.y}"></td>
+											<td th:id="${clock.colockId}" th:text="${clock.z}"></td>
+											<td th:if="${clock.online} == 'true'">
+												<span>在线</span>
+											</td>
+											<td th:if="${clock.online} != 'true'">
+												<span>离线</span>
+											</td>
+											
+											
+									<td style="width: 150px;text-align: center;">
+										
+										<button type="button" class="btn bg-purple btn-xs btn-flat" th:onclick="'javascript:setXYZ('+${clock.id}+')'">修改坐标</button>
+										<a class="btn btn-social-icon btn-danger btn-xs btn-flat" title="删除" th:onclick="'javascript:del('+${clock.id}+')'"><i class="fa fa-trash"></i></a>
+									</td>
+								</tr>
+						</tbody>
+				</table>
+				<a class="btn btn-small btn-success btn-sm btn-flat" onclick="add();">新增</a>
+		</div>
+		<form id="pageForm" >
+		<input type="hidden" id="pages" name="pages">
+		<div>
+			<nav align="right" aria-label="Page navigation">
+			  <ul class="pagination">
+			    <li>
+			      <a href="#" th:onclick="javascript:jumpPage(1)" aria-label="首页">
+			        <span aria-hidden="true">&laquo;</span>
+			      </a>
+			    </li>
+			    <li><a href="#" onclick="jumpPre()">上一页</a></li>
+			     <li><a href="#" th:text="${pages}"></a></li>
+			    <li><a href="#" onclick="jumpNext()">下一页</a></li>
+			    <li>
+			      <a href="#" id="end" onclick="jumpEnd()" aria-label="尾页">
+			        <span aria-hidden="true" placeholder="尾页" >&raquo;</span>
+			      </a>
+			    </li>
+			  </ul>
+			</nav>
+		</div>
+	</form>
+	</div>
+				
+	
+<script th:src="@{'/static/staticres/test/jquery.js'}"></script>
+
+<!--引入弹窗组件start-->
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
+<script type="text/javascript">
+	//添加新的时钟
+	function add(){
+		var addClockDialog = new Dialog();
+		addClockDialog.Width="20%";
+		addClockDialog.Height="30%";
+		addClockDialog.Title="添加新的时钟";
+		addClockDialog.URL="addClock";
+		addClockDialog.OKEvent=function(){
+			addClockDialog.innerFrame.contentWindow.save();
+			if(addClockDialog.innerFrame.contentWindow.validate() == "yes"){
+				window.top.clockConfig();
+			}
+		}
+		addClockDialog.CancelEvent = function(){//关闭事件
+			addClockDialog.close();
+		}
+		addClockDialog.show();
+	}
+	//设置时钟坐标
+	function setXYZ(id){
+		var editDialog = new Dialog();
+		editDialog.Width= "20%";
+		editDialog.Height= "30%";
+		editDialog.Title= "修改时钟坐标";
+		editDialog.URL="setXYZ?id="+id;
+		editDialog.OKEvent=function(){
+			editDialog.innerFrame.contentWindow.save();
+			if(editDiag.innerFrame.contentWindow.validate() == "yes"){
+				window.top.clockConfig();
+			}
+		}
+		editDialog.CancelEvent = function(){//关闭事件
+			editDialog.close();
+		}
+		editDialog.show();
+	}
+	//删除时钟
+	function del(id){
+		var d = {};
+		d.id = id;
+		Dialog.confirm("确认删除此基站吗？",function(){
+			$.ajax({
+				type:"GET",
+				url:"delete?id="+id,
+				contentType: "application/json;charset=utf-8",
+				success: function(data){
+					if(data.msg == "success"){
+						window.top.clockConfig();
+					}else{
+						Dialog.confirm("删除基站失败");
+					}
+				}
+			});
+		});
+	}
+	//查找时钟
+	function query(){
+		var clockName = document.getElementById("nav-search-input").value;
+		if(clockName == null || clockName.trim().length == 0){
+			Dialog.alert("输入信息有误");
+		}else{
+			$.ajax({
+				type:"GET",
+				url:"select?clockName="+clockName,
+				success:function(data){
+					if(data.msg == "success"){
+						window.location.href="clockList?ids="+data.ids;
+					}else if(data.msg== "fail"){
+						Dialog.alert("没有找到对应的时钟");
+					}
+				}
+			});
+		}
+	}
+	//跳转页面
+		function jumpPage(pages) {
+					var url = '[[${url}]]';
+					url = url.split("/")[1];
+					$("#pages").val(pages);
+					$("#pageForm").attr({"method":"post","action":url});
+					$("#pageForm").submit();
+				}
+		//上一页
+		function jumpPre(){
+			var pages = [[${pages}]] - 1;
+			if(pages < 1){
+				pages = 1;
+			}
+			jumpPage(pages);
+		}
+		//下一页
+		function jumpNext(){
+			var pages = [[${pages}]] + 1;
+			var sumPage = [[${sumPage}]]
+			if(pages > sumPage){
+				pages = sumPage
+			}
+			jumpPage(pages)
+		}
+		//尾页
+		function jumpEnd(){
+			var sumPage = [[${sumPage}]]	
+			jumpPage(sumPage)
+		}
+</script>
+</body>
+</html>

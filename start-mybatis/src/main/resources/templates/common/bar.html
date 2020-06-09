@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_header :: common_header(~{::title},~{::link},~{})">
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body id="activity_pane" class="hold-transition skin-blue sidebar-mini">
+
+	<div th:fragment="headname">
+	<div class="wrapper">
+		<header class="main-header">
+				<!-- Logo -->
+				<a href="javascript:void(0);" class="logo"> <!-- mini logo for sidebar mini 50x50 pixels -->
+					<span class="logo-mini"><b>R</b>TLS</span> <!-- logo for regular state and mobile devices -->
+					<span class="logo-lg"><b>联创科技</b>[RTLS]</span>
+				</a>
+				<!-- Header Navbar: style can be found in header.less -->
+				<nav class="navbar navbar-static-top">
+					<!-- Sidebar toggle button-->
+					
+					<div class="navbar-custom-menu">
+						<ul class="nav navbar-nav">
+							
+							<li id="user_menu" class="dropdown user user-menu">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown"> 
+									
+									<span class="hidden-xs" onclick="userEdit()" th:text="${current_login_user.nickname}"></span>
+								</a>
+								<ul class="dropdown-menu">
+									<!-- User image -->
+									<li th:if="${'not empty current_login_user.attachment_url'}" class="user-header">
+										<img width="90" height="90" th:src="@{'../static/staticres/images/adminphoto.jpg'}" class="img-circle" alt="User Image">
+										<p><small>Email：gzasor@foxmail.com</small></p>
+										<p><small>电话：0851-87990016</small></p>
+									</li>
+									
+									<li class="user-footer">
+										<div class="pull-left">
+											<a href="javascript:void(0);"class="btn btn-default btn-flat" onclick='modifyPwd();'>密码修改</a>
+										</div>
+										<div class="pull-right">
+											<a href="logout" class="btn btn-default btn-flat">注销</a>
+										</div>
+									</li>
+								</ul>
+							</li>
+							<!-- Control Sidebar Toggle Button -->
+							<li><a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a></li>
+						</ul>
+					</div>
+				</nav>
+		</header>
+		<div id="addTab">
+			<button type="button" onclick="index()" class="glyphicon glyphicon-home btn btn-success">首页</button>
+		</div>
+		<div>
+		<ol class="breadcrumb">
+		  <li class="fa fa-wifi"><a onclick="anchorConfigure()">基站配置</a></li>
+		  <li><a  class="glyphicon glyphicon-time" onclick="clockConfig()">时钟源配置</a></li>
+		  <li><a class="glyphicon glyphicon-unchecked" onclick="areaConfig()">区域配置</a></li>
+		  <li><a class="glyphicon glyphicon-tag" onclick="tagConfig()">标签配置</a></li>
+		  <li><a class=" glyphicon glyphicon-align-justify " onclick="floorConfig()">楼层管理</a></li>
+		  <li><a class="glyphicon glyphicon-picture" onclick="planMapConfig()">平面图管理</a></li>
+		  <li><a class="glyphicon glyphicon-folder-open" onclick="userFileConfig">用户文件管理</a></li>
+		  <li><a class="glyphicon glyphicon-user" onclick="userConfig()">用户管理</a></li>
+		  <li><a class="glyphicon glyphicon-edit" onclick="rtleConfig()">RTLE配置</a></li>
+		  <li><a class="glyphicon glyphicon-retweet" onclick="elConfig">电子围栏管理</a></li>
+		  <li><a class="glyphicon glyphicon-tags" onclick="tagTypeConfig()">标签类型管理</a></li>
+		  <li><a class="glyphicon glyphicon-map-marker"  onclick="positionConfig()">定位演示</a></li>
+		</ol>
+		</div>
+	<!-- Content Wrapper. Contains page content -->
+	<!-- <div class="content-wrapper">
+			Main content
+			<section class="content" style="padding: 3px 3px 0px 0px;">
+				<div class="main">
+					<div id="tabs">
+						Nav tabs
+						<ul class="nav nav-tabs" role="tablist">
+							
+						</ul>
+						Tab panes
+						<div class="tab-content"  style="margin-bottom: -5px;">
+							
+						</div>
+					</div>
+				</div>
+			</section>
+			right col
+		</div> -->
+	</div>
+	</div>
+	<script type="text/javascript">
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="common_header(title,links,styles)">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">
+	
+    <title th:replace="${title}">The awesome application</title>
+   
+<!-- Bootstrap 3.3.6 -->
+<link rel="stylesheet" th:href="@{'/static/staticres/bootstrap/css/bootstrap.css'}">
+<!-- 自定义的样式 -->
+<link rel="stylesheet" th:href="@{'/static/staticres/css/myindex.css'}">
+<link rel="stylesheet" th:href="@{'/static/staticres/dist/css/AdminLTE.css'}">
+<!-- Font Awesome -->
+<link rel="stylesheet" th:href="@{'/static/staticres/dist/css/font-awesome-4.7.0/css/font-awesome.css'}">
+<!-- Ionicons -->
+<link rel="stylesheet" th:href="@{'/static/staticres/dist/css/ionicons-master/css/ionicons.css'}">
+<!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+<link rel="stylesheet" th:href="@{'/static/staticres/dist/css/skins/_all-skins.css'}">
+
+<link rel="stylesheet" th:href="@{'/static/staticres/plugins/iCheck/all.css'}">
+<!-- iCheck -->
+<link rel="stylesheet" th:href="@{'/static/staticres/plugins/iCheck/flat/blue.css'}">
+<!-- bootstrap-addtabs -->
+<link rel="stylesheet" th:href="@{'/static/staticres/plugins/bootstrap-addtabs/css/bootstrap-addtabs.css'}">
+<!-- 加载遮罩层插件 -->
+<link rel="stylesheet" th:href="@{'/static/staticres/plugins/showLoading/css/showLoading.css'}" /> 
+
+<body>
+
+</body>
+</html>

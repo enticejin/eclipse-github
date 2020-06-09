@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_header :: common_header(~{::title},~{::link},~{})">
+    <title th:text="${current_login_user.sysname}"></title>
+</head>
+<!-- id=activity_pane作为加载遮罩层名称 -->
+<body id="activity_pane" class="hold-transition skin-blue sidebar-mini">
+	<div th:include="common/bar :: headname"></div>
+	
+	<iframe id="addHTML" style='display:none' width=1903px height=600px>
+		
+	</iframe>
+	<div class="jumbotron" >
+	  <!-- <h1>Hello, world!</h1>
+	  <p>...</p>
+	  <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p> -->
+	</div>
+	<div class="main-footer" th:include="common/common_footer :: copy"></div>
+	<script type="text/javascript">
+	//点击首页导航栏
+	function index(){
+		window.location.href = "index"
+	}
+	var MyDiv =document.getElementById("addTab");
+	//点击基站配置
+	/*
+	var flag = 0;
+	function anchorConfigure(){
+		if(flag == 0){
+			var button = document.createElement("button");
+			button.innerHTML='x基站配置';
+			button.setAttribute("id", "anchor");
+			button.setAttribute("class", "btn btn-success fa fa-wifi");
+			button.setAttribute("onclick", "gotoAnchorConfig()");
+			MyDiv.appendChild(button);
+		}
+		flag = 1;
+	}
+	
+	//前往基站配置页面
+	function gotoAnchorConfig(){
+		
+	}
+	*/
+	//基站配置
+	function anchorConfigure(){
+		//window.location.href="anchor/anchorConfig"
+		document.getElementById("addHTML").style="display:show";
+		document.getElementById("addHTML").src="anchor/anchor_config";
+	}
+	//时钟配置
+	function clockConfig(){
+		document.getElementById("addHTML").style="display:show";
+		document.getElementById("addHTML").src="clock/clockList";
+	}
+	//rtle配置
+	function rtleConfig(){
+		document.getElementById("addHTML").style="display:show";
+		document.getElementById("addHTML").src="rtle/rtleList";
+	}
+	//区域配置
+	function areaConfig(){
+		document.getElementById("addHTML").style="display:show";
+		document.getElementById("addHTML").src="area/areaList";
+	}
+	</script>
+</body>
+</html>
