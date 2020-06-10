@@ -1,12 +1,17 @@
 package com.example.draw.rtle.rtle.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.draw.rtle.model.Anchor;
 import com.example.draw.rtle.rtle.model.Rtle;
 import com.example.draw.rtle.rtle.service.RtleService;
+import com.example.draw.rtle.service.AnchorService;
 
 /** 
 * @version 创建时间：2020年6月9日 上午9:42:37
@@ -16,6 +21,8 @@ import com.example.draw.rtle.rtle.service.RtleService;
 public class RtleController {
 	@Autowired
 	private RtleService rtleService;
+	@Autowired
+	private AnchorService anchorService;
 	//RTLE页面
 	@RequestMapping("/rtleList")
 	public String rtleList(Model model) {
@@ -33,5 +40,18 @@ public class RtleController {
 			model.addAttribute("latitude", latitude);
 		}
 		return "rtle/map";
+	}
+	//选择基站调试
+	@RequestMapping("/selectAnchor")
+	public String selectAnchor(Model model) {
+		List<String> anchorNameList = new ArrayList<String>();
+		List<Anchor> anchorList = anchorService.getAnchorLsit();
+		for(Anchor anchor : anchorService.getAnchorLsit()) {
+			anchorNameList.add(anchor.getAnchorName());
+		}
+		model.addAttribute("varList", anchorNameList);
+		model.addAttribute("anchorList", anchorList);
+		model.addAttribute("flag", "anchor");
+		return "rtle/debug_list";
 	}
 }
