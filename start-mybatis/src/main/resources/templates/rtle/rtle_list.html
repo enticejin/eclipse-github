@@ -94,7 +94,7 @@
 				<tr>
 					<td style="width: 80px; text-align: right; font-weight:bold"><font color="red">
 							 </font>投票机制:</td>
-					<td><select style="width: 270px;" 
+					<td onclick="selectVote()" id="vote"><select style="width: 270px;" 
 						name="multilaterationAlgorithm" class="form-control select2">
 						<option>收到不同的seq触发投票</option>
 						<option>新seq坐标计算后触发投票</option>
@@ -106,6 +106,9 @@
 							 *</font>使用算法:</td>
 					<td><select style="width: 270px;" id="multilaterationAlgorithm"
 						name="multilaterationAlgorithm" class="form-control select2">
+						<option>算法一</option>
+						<option>算法二</option>
+						<option>算法三</option>
 					</select></td>
 					<td style="width: 80px; text-align: right; font-weight:bold; padding-top: 13px;">延迟投票:</td>
 					<td><input class="form-control input-sm" type="text" name="calculateCoordinateVoteDelayMS" id="calculateCoordinateVoteDelayMS" 
@@ -206,6 +209,10 @@
 			diag.close();
 		 }; 
 		 diag.show();
+	}
+	//选择投票机制
+	function selectVote(){
+		//document.getElementById("vote"). 
 	}
 </script>	
 </body>
