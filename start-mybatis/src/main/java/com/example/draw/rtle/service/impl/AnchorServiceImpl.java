@@ -10,8 +10,6 @@ import com.example.draw.rtle.dao.AnchorDao;
 import com.example.draw.rtle.model.Anchor;
 import com.example.draw.rtle.service.AnchorService;
 import com.example.draw.rtle.utils.PageBean;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 
 /** 
 * @version 创建时间：2020年6月2日 下午3:12:54
