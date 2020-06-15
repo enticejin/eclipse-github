@@ -54,4 +54,17 @@ public class RtleController {
 		model.addAttribute("flag", "anchor");
 		return "rtle/debug_list";
 	}
+	//选择基站调试
+	@RequestMapping("/selectArea")
+	public String selectArea(Model model) {
+		List<String> areaNameList = new ArrayList<String>();
+		List<Anchor> anchorList = anchorService.getAnchorLsit();
+		for(Anchor anchor : anchorService.getAnchorLsit()) {
+			areaNameList.add(anchor.getAnchorName());
+		}
+		model.addAttribute("varList", areaNameList);
+		model.addAttribute("anchorList", anchorList);
+		model.addAttribute("flag", "anchor");
+		return "rtle/debug_list";
+	}
 }

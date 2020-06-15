@@ -208,6 +208,7 @@
 		 }; 
 		 diag.show();
 	}
+	//选择基站调试的列表
 	function selectAnchor(){
 		var diag = new Dialog();
 		diag.Width = "50%";
@@ -236,7 +237,58 @@
 		 						}
 		 					}
 		 					if(flag == 1){
-			 					$("#addAnchorTest").append('<div class="w_div1" id='+id+' value="'+id+'"><span onclick="delebase(this)">×</span>'+showName[i]+'</div>');
+			 					$("#addAnchorTest").append('<div style="float: left;background:#3c8dbc;border:1px solid #aaa;margin-left:2px;padding:1px 10px;border-radius:4px;" id='
+			 					+id+' value="'+id+'"><span style="cursor:pointer;font-weight:bold;margin-right:5px;color: rgba(255, 255, 255, 0.7);" onclick="delebase(this)">×</span>'
+			 					+showName[i]+'</div>');
+		 					}else{
+		 						break;
+		 					}
+		 				}
+		 				
+		 				if(flag == 1){
+			 				$("#debugAnchorList").val(anchorName);
+		 				}
+		 				
+		 				diag.close();
+		 			}
+				};
+		 diag.CancelEvent = function(){ //关闭事件
+					diag.close();
+				 };
+		diag.show();
+	}
+	//选择区域调试的列表
+	function selectArea(){
+		var diag = new Dialog();
+		diag.Width = "50%";
+		diag.Height= "60%";
+		diag.Title = "调试基站选择";
+		diag.URL="selectArea";
+		 diag.OKEvent = function(){
+			  	var receivestr=diag.innerFrame.contentWindow.getAreaStrs();
+		 		var showName=receivestr.split(',');
+		 		var flag = 1;
+		 		var anchorName = getDebugAnchorName();
+		 		console.info("t:"+showName);
+		 		if(showName[0]=='')
+		 			{
+						Dialog.alert("提示：你没有选择任何内容,若想取消选择，请点击【取消】按钮");
+		 			}
+		 		else{
+		 				for(var i =0;i < showName.length;i++){
+		 					var id= showName[i];
+		 					var anchorArray = anchorName.split(",");
+		 					for(var j =0 ; j < anchorArray.length ;j++){
+		 						if(id == anchorArray[j]){
+		 							Dialog.alert(id+"--已添加");
+		 							flag = 0;
+		 							break;
+		 						}
+		 					}
+		 					if(flag == 1){
+			 					$("#addAnchorTest").append('<div style="float: left;background:#3c8dbc;border:1px solid #aaa;margin-left:2px;padding:1px 10px;border-radius:4px;" id='
+			 					+id+' value="'+id+'"><span style="cursor:pointer;font-weight:bold;margin-right:5px;color: rgba(255, 255, 255, 0.7);" onclick="delebase(this)">×</span>'
+			 					+showName[i]+'</div>');
 		 					}else{
 		 						break;
 		 					}
@@ -261,8 +313,7 @@
 		var div_s = myDiv.getElementsByTagName("div");
 		var anchorName = '';
 		for(var i=0;i<div_s.length;i++){
-			//anchorName += div_s.item(i).innerHTML.substring(39,div_s.item(i).innerHTML.length)+",";
-			anchorName += div_s.item(i).innerHTML+",";
+			anchorName += div_s.item(i).innerHTML.substring(div_s.item(i).innerHTML.length-9,div_s.item(i).innerHTML.length)+",";
 		}
 		return anchorName;
 	}
