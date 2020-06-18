@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.draw.rtle.area.model.Area;
+import com.example.draw.rtle.area.service.AreaService;
 import com.example.draw.rtle.model.Anchor;
 import com.example.draw.rtle.rtle.model.Rtle;
 import com.example.draw.rtle.rtle.service.RtleService;
@@ -23,6 +25,8 @@ public class RtleController {
 	private RtleService rtleService;
 	@Autowired
 	private AnchorService anchorService;
+	@Autowired
+	private AreaService areaService;
 	//RTLE页面
 	@RequestMapping("/rtleList")
 	public String rtleList(Model model) {
@@ -58,13 +62,13 @@ public class RtleController {
 	@RequestMapping("/selectArea")
 	public String selectArea(Model model) {
 		List<String> areaNameList = new ArrayList<String>();
-		List<Anchor> anchorList = anchorService.getAnchorLsit();
-		for(Anchor anchor : anchorService.getAnchorLsit()) {
-			areaNameList.add(anchor.getAnchorName());
+		List<Area> areaList = areaService.getAreaLsit();
+		for(Area area : areaList) {
+			areaNameList.add(area.getAreaName());
 		}
 		model.addAttribute("varList", areaNameList);
-		model.addAttribute("anchorList", anchorList);
-		model.addAttribute("flag", "anchor");
+		model.addAttribute("areaList", areaList);
+		model.addAttribute("flag", "area");
 		return "rtle/debug_list";
 	}
 }

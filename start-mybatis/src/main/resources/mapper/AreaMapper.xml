@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.draw.rtle.area.mapper.AreaMapper">
+  <resultMap id="BaseResultMap" type="com.example.draw.rtle.area.model.Area">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="area_name" jdbcType="VARCHAR" property="areaName" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="area_wide" jdbcType="VARCHAR" property="areaWide" />
+    <result column="clock_id" jdbcType="INTEGER" property="clockId" />
+    <result column="action_type" jdbcType="VARCHAR" property="actionType" />
+    <result column="z" jdbcType="VARCHAR" property="z" />
+    <result column="average_filtering" jdbcType="VARCHAR" property="averageFiltering" />
+    <result column="kalman" jdbcType="VARCHAR" property="kalman" />
+    <result column="anchor_id" jdbcType="INTEGER" property="anchorId" />
+    <result column="use_average_filter" jdbcType="VARCHAR" property="useAverageFilter" />
+    <result column="use_boundary_value" jdbcType="VARCHAR" property="useBoundaryValue" />
+    <result column="use_kalman_filter" jdbcType="VARCHAR" property="useKalmanFilter" />
+    <result column="action" jdbcType="VARCHAR" property="action" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, area_name, remarks, area_wide, clock_id, action_type, z, average_filtering, kalman, 
+    anchor_id, use_average_filter, use_boundary_value, use_kalman_filter, action
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from area
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from area
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.example.draw.rtle.area.model.Area">
+    insert into area (id, area_name, remarks, 
+      area_wide, clock_id, action_type, 
+      z, average_filtering, kalman, 
+      anchor_id, use_average_filter, use_boundary_value, 
+      use_kalman_filter, action)
+    values (#{id,jdbcType=INTEGER}, #{areaName,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, 
+      #{areaWide,jdbcType=VARCHAR}, #{clockId,jdbcType=INTEGER}, #{actionType,jdbcType=VARCHAR}, 
+      #{z,jdbcType=VARCHAR}, #{averageFiltering,jdbcType=VARCHAR}, #{kalman,jdbcType=VARCHAR}, 
+      #{anchorId,jdbcType=INTEGER}, #{useAverageFilter,jdbcType=VARCHAR}, #{useBoundaryValue,jdbcType=VARCHAR}, 
+      #{useKalmanFilter,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.example.draw.rtle.area.model.Area">
+    insert into area
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="areaName != null">
+        area_name,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="areaWide != null">
+        area_wide,
+      </if>
+      <if test="clockId != null">
+        clock_id,
+      </if>
+      <if test="actionType != null">
+        action_type,
+      </if>
+      <if test="z != null">
+        z,
+      </if>
+      <if test="averageFiltering != null">
+        average_filtering,
+      </if>
+      <if test="kalman != null">
+        kalman,
+      </if>
+      <if test="anchorId != null">
+        anchor_id,
+      </if>
+      <if test="useAverageFilter != null">
+        use_average_filter,
+      </if>
+      <if test="useBoundaryValue != null">
+        use_boundary_value,
+      </if>
+      <if test="useKalmanFilter != null">
+        use_kalman_filter,
+      </if>
+      <if test="action != null">
+        action,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="areaName != null">
+        #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="areaWide != null">
+        #{areaWide,jdbcType=VARCHAR},
+      </if>
+      <if test="clockId != null">
+        #{clockId,jdbcType=INTEGER},
+      </if>
+      <if test="actionType != null">
+        #{actionType,jdbcType=VARCHAR},
+      </if>
+      <if test="z != null">
+        #{z,jdbcType=VARCHAR},
+      </if>
+      <if test="averageFiltering != null">
+        #{averageFiltering,jdbcType=VARCHAR},
+      </if>
+      <if test="kalman != null">
+        #{kalman,jdbcType=VARCHAR},
+      </if>
+      <if test="anchorId != null">
+        #{anchorId,jdbcType=INTEGER},
+      </if>
+      <if test="useAverageFilter != null">
+        #{useAverageFilter,jdbcType=VARCHAR},
+      </if>
+      <if test="useBoundaryValue != null">
+        #{useBoundaryValue,jdbcType=VARCHAR},
+      </if>
+      <if test="useKalmanFilter != null">
+        #{useKalmanFilter,jdbcType=VARCHAR},
+      </if>
+      <if test="action != null">
+        #{action,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.draw.rtle.area.model.Area">
+    update area
+    <set>
+      <if test="areaName != null">
+        area_name = #{areaName,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="areaWide != null">
+        area_wide = #{areaWide,jdbcType=VARCHAR},
+      </if>
+      <if test="clockId != null">
+        clock_id = #{clockId,jdbcType=INTEGER},
+      </if>
+      <if test="actionType != null">
+        action_type = #{actionType,jdbcType=VARCHAR},
+      </if>
+      <if test="z != null">
+        z = #{z,jdbcType=VARCHAR},
+      </if>
+      <if test="averageFiltering != null">
+        average_filtering = #{averageFiltering,jdbcType=VARCHAR},
+      </if>
+      <if test="kalman != null">
+        kalman = #{kalman,jdbcType=VARCHAR},
+      </if>
+      <if test="anchorId != null">
+        anchor_id = #{anchorId,jdbcType=INTEGER},
+      </if>
+      <if test="useAverageFilter != null">
+        use_average_filter = #{useAverageFilter,jdbcType=VARCHAR},
+      </if>
+      <if test="useBoundaryValue != null">
+        use_boundary_value = #{useBoundaryValue,jdbcType=VARCHAR},
+      </if>
+      <if test="useKalmanFilter != null">
+        use_kalman_filter = #{useKalmanFilter,jdbcType=VARCHAR},
+      </if>
+      <if test="action != null">
+        action = #{action,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.draw.rtle.area.model.Area">
+    update area
+    set area_name = #{areaName,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      area_wide = #{areaWide,jdbcType=VARCHAR},
+      clock_id = #{clockId,jdbcType=INTEGER},
+      action_type = #{actionType,jdbcType=VARCHAR},
+      z = #{z,jdbcType=VARCHAR},
+      average_filtering = #{averageFiltering,jdbcType=VARCHAR},
+      kalman = #{kalman,jdbcType=VARCHAR},
+      anchor_id = #{anchorId,jdbcType=INTEGER},
+      use_average_filter = #{useAverageFilter,jdbcType=VARCHAR},
+      use_boundary_value = #{useBoundaryValue,jdbcType=VARCHAR},
+      use_kalman_filter = #{useKalmanFilter,jdbcType=VARCHAR},
+      action = #{action,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getAreaLsit" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from area
+  </select>
+  <select id="areaList" parameterType="map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from area limit #{beg}, ${num} 
+  </select>
+  <select id="count" parameterType="map" resultType="integer">
+  	select count(id) from area
+  </select>
+</mapper>

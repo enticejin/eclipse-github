@@ -81,7 +81,7 @@
   <select id="clockList" parameterType="map" resultMap="BaseResultMap">
  select id, serial_no, clock_name, colock_id, x, y, z, ip, mac, `online`, `enable`
   from clock 
-  limit #{beg},${num}
+  limit #{beg},#{num}
   </select>
   
   <select id="count" parameterType="map" resultType="integer">

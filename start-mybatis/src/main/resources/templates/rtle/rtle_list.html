@@ -216,7 +216,7 @@
 		diag.Title = "调试基站选择";
 		diag.URL="selectAnchor";
 		 diag.OKEvent = function(){
-			  	var receivestr=diag.innerFrame.contentWindow.getAreaStrs();
+			  	var receivestr=diag.innerFrame.contentWindow.getAnchorStrs();
 		 		var showName=receivestr.split(',');
 		 		var flag = 1;
 		 		var anchorName = getDebugAnchorName();
@@ -262,10 +262,10 @@
 		var diag = new Dialog();
 		diag.Width = "50%";
 		diag.Height= "60%";
-		diag.Title = "调试基站选择";
+		diag.Title = "调试区域选择";
 		diag.URL="selectArea";
 		 diag.OKEvent = function(){
-			  	var receivestr=diag.innerFrame.contentWindow.getAreaStrs();
+			  	var receivestr=diag.innerFrame.contentWindow.getAnchorStrs();
 		 		var showName=receivestr.split(',');
 		 		var flag = 1;
 		 		var anchorName = getDebugAnchorName();
