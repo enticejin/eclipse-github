@@ -68,7 +68,7 @@ public class AnchorController {
 	public String anchor_config(HttpServletRequest request,Model model,String ids,
 			Anchor anchor,Map<String,Object> map1,
 			@RequestParam(required=false,defaultValue="1") int pages,
-			@RequestParam(required=false,defaultValue="4") int num) {
+			@RequestParam(required=false,defaultValue="10") int num) {
 		PageBean.conMap(pages, map1, num, request, anchor);
 		anchorService.anchorList(map1);
 		HttpSession session = request.getSession();

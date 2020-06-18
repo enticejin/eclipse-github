@@ -38,7 +38,7 @@ public class ClockController {
 	public String clockList(HttpServletRequest request,Model model,String ids,
 			Clock clock,Map<String,Object> map,
 			@RequestParam(required=false,defaultValue="1") int pages,
-			@RequestParam(required=false,defaultValue="4") int num) {
+			@RequestParam(required=false,defaultValue="10") int num) {
 		PageBean.conMap(pages, map, num, request,clock);
 		clockService.clockList(map);
 		if(ids == null) {
