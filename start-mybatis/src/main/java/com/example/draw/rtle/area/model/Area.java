@@ -15,7 +15,7 @@ public class Area {
 
     private String areaWide;
 
-    private Integer clockId;
+    private String clockName;
 
     private String actionType;
 
@@ -25,7 +25,7 @@ public class Area {
 
     private String kalman;
 
-    private Integer anchorId;
+    private String anchorId;
 
     private String useAverageFilter;
 
@@ -87,15 +87,17 @@ public class Area {
         this.areaWide = areaWide == null ? null : areaWide.trim();
     }
 
-    public Integer getClockId() {
-        return clockId;
-    }
+    
 
-    public void setClockId(Integer clockId) {
-        this.clockId = clockId;
-    }
+    public String getClockName() {
+		return clockName;
+	}
 
-    public String getActionType() {
+	public void setClockName(String clockName) {
+		this.clockName = clockName;
+	}
+
+	public String getActionType() {
         return actionType;
     }
 
@@ -127,15 +129,15 @@ public class Area {
         this.kalman = kalman == null ? null : kalman.trim();
     }
 
-    public Integer getAnchorId() {
-        return anchorId;
-    }
+    public String getAnchorId() {
+		return anchorId;
+	}
 
-    public void setAnchorId(Integer anchorId) {
-        this.anchorId = anchorId;
-    }
+	public void setAnchorId(String anchorId) {
+		this.anchorId = anchorId;
+	}
 
-    public String getUseAverageFilter() {
+	public String getUseAverageFilter() {
         return useAverageFilter;
     }
 

@@ -24,4 +24,6 @@ public interface AreaService {
 	List<Area> getAreaLsit();
 
 	Map<String, Object> areaList(Map<String, Object> map);
+
+	List<Area> getAreaByName(String areaName);
 }

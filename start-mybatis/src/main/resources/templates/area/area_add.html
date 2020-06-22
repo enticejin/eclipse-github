@@ -12,9 +12,9 @@
 </style>
 </head>
 <body style="overflow-x: hidden; overflow-y: hidden;">
-	<form action="saveArea?flag='area'" name="userForm"
+	<form action="saveArea" name="userForm"
 	id="userForm" method="post">
-	<div id="zhongxin">
+	<div  th:if="${flag} == 'add'"id="zhongxin">
 			<table id="table_report"
 				class="table table-striped table-bordered table-hover">
 				<tr>
@@ -34,9 +34,7 @@
 							* </font>定位维度:</td>
 					<td><select style="width: 270px;" id="locationDimensionality"
 						name="locationDimensionality" class="form-control select2">
-							<option>一维</option>
-							<option>二维</option>
-							<option>三维</option>
+							<option th:each="wide,wideStat:${wideList}" th:id="${wideStat.index}" th:value="${wide.id}" th:text="${wide.name}"></option>
 					</select></td>
 
 					<td style="width: 100px; text-align: right;"><font color="red">
@@ -55,8 +53,7 @@
 							* </font>触发方式:</td>
 					<td colspan="3"><select style="width: 270px;" id="locationTrigger"
 						name="locationTrigger" class="form-control select2">
-							<option>消息数量达到最小要求, 触发计算</option>
-							<option>下一条消息到达, 触发计算(如果消息数量不够,不触发)</option>
+							<option th:each="location,locationStat:${locationList}"th:value="${location.id}" th:id="${locationStat.index}" th:text="${location.name}"></option>
 					</select></td>
 					
 				</tr>
@@ -65,7 +62,7 @@
 							* </font>Z坐标缺省高度:</td>
 					<td><input type="text" class="form-control input-sm"
 						id="defaultZ_Value" name="defaultZ_Value"
-						value="" placeholder="这里输入Z坐标缺省值"
+						value="1.0" placeholder="这里输入Z坐标缺省值"
 						title="Z坐标缺省值"></td>
 					<td style="width: 100px; text-align: right;"></td>
 					<td style="text-align: left;">
@@ -81,7 +78,7 @@
 					<td><input type="text" class="form-control input-sm"
 						id="averageFilterSampleTimeLength"
 						name="averageFilterSampleTimeLength"
-						value=""
+						value="1000"
 						placeholder="输入平均值滤波器时长单位是毫秒" title="输入平均值滤波器时长单位是毫秒"></td>
 					<td style="width: 100px; text-align: right;"></td>
 					<td style="text-align: left;">
@@ -98,7 +95,7 @@
 							* </font>卡尔曼:</td>
 					<td><input type="text" class="form-control input-sm"
 						id=kalmanFilterLevel name="kalmanFilterLevel"
-						value="" placeholder="这里输入卡尔曼滤波器"
+						value="20" placeholder="这里输入卡尔曼滤波器"
 						title="卡尔曼滤波器"></td>
 					<td style="width: 100px; text-align: right;"></td>
 					<td style="text-align: left;">
@@ -122,7 +119,7 @@
 					</td>
 					<td>
 						<div class="btn-group" role="group">
-							<a  class="btn btn-default" onclick="selectAnchor()">选择...</a>
+							<a class="btn btn-default" th:onclick="'selectAnchor();'">选择...</a>
 						</div>
 					</td>
 					<!-- <td style="width: 100px; text-align: right;"></td> -->
@@ -136,9 +133,279 @@
 
 			</table>
 		</div>
+	<div  th:if="${flag} == 'update'"id="zhongxin">
+	<input type="hidden" id="areaId" th:value="${area.id}">
+			<table id="table_report"
+				class="table table-striped table-bordered table-hover">
+				<tr>
+					<td style="width: 110px; text-align: right;"><font color="red">*
+					</font>区域名称:</td>
+					<td><input type="text" class="form-control input-sm" id="name"
+						name="name" th:value="${area.areaName}" 
+						title="区域名称"></td>
+
+					<td style="width: 105px; text-align: right;">备注信息:</td>
+					<td><input type="text" class="form-control input-sm"
+						id="comments" name="comments" th:value="${area.remarks}"
+						 title="备注信息"></td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>定位维度:</td>
+					<td><select style="width: 270px;" id="locationDimensionality"
+						name="locationDimensionality" class="form-control select2">
+							<option th:each="wide,wideStat:${wideList}" th:if="${wide.id} == ${area.areaWide}" selected='selected' th:id="${wideStat.index}" th:value="${wide.id}" th:text="${wide.name}"></option>
+							<option th:each="wide,wideStat:${wideList}" th:if="${wide.id} != ${area.areaWide}" th:id="${wideStat.index}" th:value="${wide.id}" th:text="${wide.name}"></option>
+					</select></td>
+
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>时钟源</td>
+					<td><select style="width: 270px;" id="clockSourceId"
+						 th:if="${clockList} != null" 
+						name="clockSourceId" class="form-control select2">
+							
+							<option th:if="${clockList} == null">无</option>
+							<option th:each="clock:${clockList}" th:if="${clock.clockName} == ${area.clockName}" selected="selected" th:value="${clock.clockName}" th:text="${clock.clockName}"></option>
+							<option th:each="clock:${clockList}" th:if="${clock.clockName} != ${area.clockName}" th:value="${clock.clockName}" th:text="${clock.clockName}"></option>
+					</select></td>
+				</tr>
+				<tr>
+
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>触发方式:</td>
+					<td colspan="3"><select style="width: 270px;" id="locationTrigger"
+						name="locationTrigger" class="form-control select2">
+							<option th:each="location,locationStat:${locationList}"th:value="${location.id}" th:id="${locationStat.index}" th:if="${location.id} == ${area.actionType}" selected="selected" th:text="${location.name}"></option>
+							<option th:each="location,locationStat:${locationList}"th:value="${location.id}" th:id="${locationStat.index}" th:if="${location.id} != ${area.actionType}"  th:text="${location.name}"></option>
+					</select></td>
+					
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>Z坐标缺省高度:</td>
+					<td><input type="text" class="form-control input-sm"
+						id="defaultZ_Value" name="defaultZ_Value"
+						th:value="${area.z}" placeholder="这里输入Z坐标缺省值"
+						title="Z坐标缺省值"></td>
+					<td style="width: 100px; text-align: right;"></td>
+					<td style="text-align: left;">
+						<div class="checkbox icheck">
+							<label th:if="${area.useAverageFilter} eq 'true'"><input id="useAverageFilter"  checked="checked" 
+								name="useAverageFilter" type="checkbox"> 使用平均值滤波器</label>
+							<label th:if="${area.useAverageFilter} == 'false'"><input id="useAverageFilter" 
+								name="useAverageFilter" type="checkbox"> 使用平均值滤波器</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>平均滤波时长(毫秒):</td>
+					<td><input type="text" class="form-control input-sm"
+						id="averageFilterSampleTimeLength"
+						name="averageFilterSampleTimeLength"
+						th:value="${area.averageFiltering}"
+						placeholder="输入平均值滤波器时长单位是毫秒" title="输入平均值滤波器时长单位是毫秒"></td>
+					<td style="width: 100px; text-align: right;"></td>
+					<td style="text-align: left;">
+						<div class="checkbox icheck">
+
+							<label th:if="${area.useBoundaryValue} == 'true'"><input id="discardPointsOfOutOfArea"
+								name="discardPointsOfOutOfArea" type="checkbox" checked="checked">
+								是否启用边界限制</label>
+							<label th:if="${area.useBoundaryValue} == 'false'"><input id="discardPointsOfOutOfArea"
+								name="discardPointsOfOutOfArea" type="checkbox">
+								是否启用边界限制</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>卡尔曼:</td>
+					<td><input type="text" class="form-control input-sm"
+						id=kalmanFilterLevel name="kalmanFilterLevel"
+						value="20" placeholder="这里输入卡尔曼滤波器"
+						title="卡尔曼滤波器"></td>
+					<td style="width: 100px; text-align: right;"></td>
+					<td style="text-align: left;">
+						<div class="checkbox icheck">
+							<label th:if="${area.useKalmanFilter} == 'true'"><input id="useKalmanFilter" name="useKalmanFilter" checked="checked"
+								type="checkbox"> 使用卡尔曼滤波器</label>
+							<label th:if="${area.useKalmanFilter} == 'false'"><input id="useKalmanFilter" name="useKalmanFilter"
+								type="checkbox"> 使用卡尔曼滤波器</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>定位基站:</td>
+					<td style="text-align: left;">
+						<div style="width:256px">
+							<div style="float: left;width:287px;height:90px;border:1px solid #ccc">
+								<div id="addAnchorTest" style="width:287px;height:90px;color:white;overflow-y:scroll; border: 1px solid #ccc">
+									<div th:each="anchor:${anchorNames}" style="float: left;background:#3c8dbc;border:1px solid #aaa;margin-left:2px;padding:1px 10px;border-radius:4px;" 
+									 th:value="${anchor}"><span style="cursor:pointer;font-weight:bold;margin-right:5px;
+									color: rgba(255, 255, 255, 0.7);" onclick="delebase(this)">×</span>
+									<span th:id="anchor" th:text="${anchor}" th:value="${anchor}"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="btn-group" role="group">
+							<a  class="btn btn-default" onclick="selectAnchor()">选择...</a>
+						</div>
+					</td>
+					<!-- <td style="width: 100px; text-align: right;"></td> -->
+					<td style="text-align: left;">
+						<div class="checkbox icheck">
+							<label th:if="${area.action} == 'true'"><input id="active" name="active" type="checkbox" checked="checked"> 是否激活(激活才会定位)</label>
+							<label th:if="${area.action} == 'false'"><input id="active" name="active" type="checkbox"> 是否激活(激活才会定位)</label>
+						</div>
+					</td>
+				</tr>
+				
+
+			</table>
+		</div>
+	<div  th:if="${flag} == 'copy'"id="zhongxin">
+	<input type="hidden" id="areaId" th:value="${area.id}">
+			<table id="table_report"
+				class="table table-striped table-bordered table-hover">
+				<tr>
+					<td style="width: 110px; text-align: right;"><font color="red">*
+					</font>区域名称:</td>
+					<td><input type="text" class="form-control input-sm" id="name"
+						name="name" th:value="${area.areaName}" 
+						title="区域名称"></td>
+
+					<td style="width: 105px; text-align: right;">备注信息:</td>
+					<td><input type="text" class="form-control input-sm"
+						id="comments" name="comments" th:value="${area.remarks}"
+						 title="备注信息"></td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>定位维度:</td>
+					<td><select style="width: 270px;" id="locationDimensionality"
+						name="locationDimensionality" class="form-control select2">
+							<option th:each="wide,wideStat:${wideList}" th:if="${wide.id} == ${area.areaWide}" selected='selected' th:id="${wideStat.index}" th:value="${wide.id}" th:text="${wide.name}"></option>
+							<option th:each="wide,wideStat:${wideList}" th:if="${wide.id} != ${area.areaWide}" th:id="${wideStat.index}" th:value="${wide.id}" th:text="${wide.name}"></option>
+					</select></td>
+
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>时钟源</td>
+					<td><select style="width: 270px;" id="clockSourceId"
+						 th:if="${clockList} != null" 
+						name="clockSourceId" class="form-control select2">
+							
+							<option th:if="${clockList} == null">无</option>
+							<option th:each="clock:${clockList}" th:if="${clock.clockName} == ${area.clockName}" selected="selected" th:value="${clock.clockName}" th:text="${clock.clockName}"></option>
+							<option th:each="clock:${clockList}" th:if="${clock.clockName} != ${area.clockName}" th:value="${clock.clockName}" th:text="${clock.clockName}"></option>
+					</select></td>
+				</tr>
+				<tr>
+
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>触发方式:</td>
+					<td colspan="3"><select style="width: 270px;" id="locationTrigger"
+						name="locationTrigger" class="form-control select2">
+							<option th:each="location,locationStat:${locationList}"th:value="${location.id}" th:id="${locationStat.index}" th:if="${location.id} == ${area.actionType}" selected="selected" th:text="${location.name}"></option>
+							<option th:each="location,locationStat:${locationList}"th:value="${location.id}" th:id="${locationStat.index}" th:if="${location.id} != ${area.actionType}"  th:text="${location.name}"></option>
+					</select></td>
+					
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>Z坐标缺省高度:</td>
+					<td><input type="text" class="form-control input-sm"
+						id="defaultZ_Value" name="defaultZ_Value"
+						th:value="${area.z}" placeholder="这里输入Z坐标缺省值"
+						title="Z坐标缺省值"></td>
+					<td style="width: 100px; text-align: right;"></td>
+					<td style="text-align: left;">
+						<div class="checkbox icheck">
+							<label th:if="${area.useAverageFilter} eq 'true'"><input id="useAverageFilter"  checked="checked" 
+								name="useAverageFilter" type="checkbox"> 使用平均值滤波器</label>
+							<label th:if="${area.useAverageFilter} == 'false'"><input id="useAverageFilter" 
+								name="useAverageFilter" type="checkbox"> 使用平均值滤波器</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>平均滤波时长(毫秒):</td>
+					<td><input type="text" class="form-control input-sm"
+						id="averageFilterSampleTimeLength"
+						name="averageFilterSampleTimeLength"
+						th:value="${area.averageFiltering}"
+						placeholder="输入平均值滤波器时长单位是毫秒" title="输入平均值滤波器时长单位是毫秒"></td>
+					<td style="width: 100px; text-align: right;"></td>
+					<td style="text-align: left;">
+						<div class="checkbox icheck">
+
+							<label th:if="${area.useBoundaryValue} == 'true'"><input id="discardPointsOfOutOfArea"
+								name="discardPointsOfOutOfArea" type="checkbox" checked="checked">
+								是否启用边界限制</label>
+							<label th:if="${area.useBoundaryValue} == 'false'"><input id="discardPointsOfOutOfArea"
+								name="discardPointsOfOutOfArea" type="checkbox">
+								是否启用边界限制</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>卡尔曼:</td>
+					<td><input type="text" class="form-control input-sm"
+						id=kalmanFilterLevel name="kalmanFilterLevel"
+						value="20" placeholder="这里输入卡尔曼滤波器"
+						title="卡尔曼滤波器"></td>
+					<td style="width: 100px; text-align: right;"></td>
+					<td style="text-align: left;">
+						<div class="checkbox icheck">
+							<label th:if="${area.useKalmanFilter} == 'true'"><input id="useKalmanFilter" name="useKalmanFilter" checked="checked"
+								type="checkbox"> 使用卡尔曼滤波器</label>
+							<label th:if="${area.useKalmanFilter} == 'false'"><input id="useKalmanFilter" name="useKalmanFilter"
+								type="checkbox"> 使用卡尔曼滤波器</label>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;"><font color="red">
+							* </font>定位基站:</td>
+					<td style="text-align: left;">
+						<div style="width:256px">
+							<div style="float: left;width:287px;height:90px;border:1px solid #ccc">
+								<div id="addAnchorTest" style="width:287px;height:90px;color:white;overflow-y:scroll; border: 1px solid #ccc">
+									<div th:each="anchor:${anchorNames}" style="float: left;background:#3c8dbc;border:1px solid #aaa;margin-left:2px;padding:1px 10px;border-radius:4px;" 
+									 th:value="${anchor}"><span style="cursor:pointer;font-weight:bold;margin-right:5px;
+									color: rgba(255, 255, 255, 0.7);" onclick="delebase(this)">×</span>
+									<span th:id="anchor" th:text="${anchor}" th:value="${anchor}"></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="btn-group" role="group">
+							<a  class="btn btn-default" onclick="selectAnchor()">选择...</a>
+						</div>
+					</td>
+					<!-- <td style="width: 100px; text-align: right;"></td> -->
+					<td style="text-align: left;">
+						<div class="checkbox icheck">
+							<label th:if="${area.action} == 'true'"><input id="active" name="active" type="checkbox" checked="checked"> 是否激活(激活才会定位)</label>
+							<label th:if="${area.action} == 'false'"><input id="active" name="active" type="checkbox"> 是否激活(激活才会定位)</label>
+						</div>
+					</td>
+				</tr>
+				
+
+			</table>
+		</div>
 		<div id="zhongxin2" class="center" style="display: none">
 			<br /> <br /> <br /> <br /> <br /> <img
-				th:src="@{'static/staticres/images/jiazai.gif'}" /><br />
+				th:src="@{'/static/staticres/images/jiazai.gif'}" /><br />
 			<h4 class="lighter block green">提交中...</h4>
 		</div>
 	</form>
@@ -161,9 +428,18 @@ function selectAnchor(){
 	diag.URL="selectAnchor";
 	 diag.OKEvent = function(){
 		  	var receivestr=diag.innerFrame.contentWindow.getAnchorStrs();
+		  	var receiveIds = diag.innerFrame.contentWindow.getAnchorIds();
+		  	var anchorIds = receiveIds.split(',')
 	 		var showName=receivestr.split(',');
 	 		var flag = 1;
-	 		var anchorName = getDebugAnchorName();
+	 		var anchorName;
+	 		if('[[${flag}]]' == 'add'){
+		 		anchorName = getDebugAnchorName();
+	 		}else if('[[${flag}]]' == 'update'){
+	 			anchorName = getDebugAreaAnchorName();
+	 		}else if('[[${flag}]]' == 'copy'){
+	 			anchorName =  getDebugAreaAnchorName();
+	 		}
 	 		console.info("t:"+showName);
 	 		if(showName[0]=='')
 	 			{
@@ -182,8 +458,8 @@ function selectAnchor(){
 	 					}
 	 					if(flag == 1){
 		 					$("#addAnchorTest").append('<div style="float: left;background:#3c8dbc;border:1px solid #aaa;margin-left:2px;padding:1px 10px;border-radius:4px;" id='
-		 					+id+' value="'+id+'"><span style="cursor:pointer;font-weight:bold;margin-right:5px;color: rgba(255, 255, 255, 0.7);" onclick="delebase(this)">×</span>'
-		 					+showName[i]+'</div>');
+		 					+anchorIds[i]+' value="'+id+'"><span style="cursor:pointer;font-weight:bold;margin-right:5px;color: rgba(255, 255, 255, 0.7);" onclick="delebase(this)">×</span><span>'
+		 					+showName[i]+'</span></div>');
 	 					}else{
 	 						break;
 	 					}
@@ -208,14 +484,181 @@ function getDebugAnchorName(){
 	var div_s = myDiv.getElementsByTagName("div");
 	var anchorName = '';
 	for(var i=0;i<div_s.length;i++){
-		anchorName += div_s.item(i).innerHTML.substring(div_s.item(i).innerHTML.length-9,div_s.item(i).innerHTML.length)+",";
+		anchorName += div_s.item(i).innerHTML.substring(129,div_s.item(i).innerHTML.length)+",";
 	}
+	return anchorName;
+}
+//获取区域调试基站的名称
+function getDebugAreaAnchorName(){ 
+	var myDiv = document.getElementById("addAnchorTest");
+	var div_s = myDiv.getElementsByTagName("div");
+	var anchorName = '';
+	for(var i=0;i<div_s.length;i++){
+		anchorName += div_s.item(i).getElementsByTagName("span")[1].innerHTML+",";
+	} 
 	return anchorName;
 }
 //删除元素
 function delebase(divid){
 	$(divid).parent().remove();
 }
+
+//保存新增的区域
+function save(){
+	if(validate() == "OK"){
+		//添加页面保存
+		var flag = '[[${flag}]]';
+		if(flag == 'add'){
+			var myDiv = document.getElementById("addAnchorTest");
+			var div_s = myDiv.getElementsByTagName("div");
+			var anchorNames = '';
+			for(var i=0;i<div_s.length;i++){
+				anchorNames += div_s.item(i).getElementsByTagName("span")[1].innerHTML+",";
+			}
+			var data = {};
+			data.flag=flag
+			data.areaName = $("#name").val();//区域名称
+			data.clockName =$("#clockSourceId").val();
+			data.averageFilterSampleTimeLength = $("#averageFilterSampleTimeLength").val();
+			data.anchorNames = anchorNames;
+			data.z = $("#defaultZ_Value").val();
+			data.wide = $("#locationDimensionality").val();
+			data.locationTrigger = $("#locationTrigger").val();
+			data.remarks = $("#comments").val();
+			data.kalmanFilterLevel = $("#kalmanFilterLevel").val();
+			data.useAverageFilter =  $("#useAverageFilter").is(":checked");
+			data.discardPointsOfOutOfArea = $("#discardPointsOfOutOfArea").is(":checked");
+			data.useKalmanFilter = $("#useKalmanFilter").is(":checked");
+			data.active = $("#active").is(":checked");
+			$.ajax({
+				url:"save",
+				data:JSON.stringify(data),
+				type:"post",
+				contentType: "application/json;charset=utf-8",
+				success:function(data){
+					var msg = data.msg
+					if(msg == 'success'){
+						window.top.areaConfig();
+					}
+				}
+			});
+		}
+		//区域更新
+		if(flag == 'update'){
+			var areaId = $("#areaId").val();
+			var myDiv = document.getElementById("addAnchorTest");
+			var div_s = myDiv.getElementsByTagName("div");
+			var anchorNames = '';
+			for(var i=0;i<div_s.length;i++){
+				anchorNames += div_s.item(i).getElementsByTagName("span")[1].innerHTML+",";
+			} 
+			var data = {};
+			data.areaId=areaId;
+			data.flag=[[flag]]
+			data.areaName = $("#name").val();//区域名称
+			data.clockName =$("#clockSourceId").val();
+			data.averageFilterSampleTimeLength = $("#averageFilterSampleTimeLength").val();
+			data.anchorNames = anchorNames;
+			data.z = $("#defaultZ_Value").val();
+			data.wide = $("#locationDimensionality").val();
+			data.locationTrigger = $("#locationTrigger").val();
+			data.remarks = $("#comments").val();
+			data.kalmanFilterLevel = $("#kalmanFilterLevel").val();
+			data.useAverageFilter =  $("#useAverageFilter").is(":checked");
+			data.discardPointsOfOutOfArea = $("#discardPointsOfOutOfArea").is(":checked");
+			data.useKalmanFilter = $("#useKalmanFilter").is(":checked");
+			data.active = $("#active").is(":checked");
+			$.ajax({
+				url:"save",
+				data:JSON.stringify(data),
+				type:"post",
+				contentType: "application/json;charset=utf-8",
+				success:function(data){
+					var msg = data.msg
+					if(msg == 'success'){
+						window.top.areaConfig();
+					}
+				}
+			});
+		}
+	//区域复制
+	if(flag == 'copy'){
+		var myDiv = document.getElementById("addAnchorTest");
+		var div_s = myDiv.getElementsByTagName("div");
+		var anchorNames = '';
+		for(var i=0;i<div_s.length;i++){
+			anchorNames += div_s.item(i).getElementsByTagName("span")[1].innerHTML+",";
+		}
+		var data = {};
+		data.flag=flag
+		data.areaName = $("#name").val();//区域名称
+		data.clockName =$("#clockSourceId").val();
+		data.averageFilterSampleTimeLength = $("#averageFilterSampleTimeLength").val();
+		data.anchorNames = anchorNames;
+		data.z = $("#defaultZ_Value").val();
+		data.wide = $("#locationDimensionality").val();
+		data.locationTrigger = $("#locationTrigger").val();
+		data.remarks = $("#comments").val();
+		data.kalmanFilterLevel = $("#kalmanFilterLevel").val();
+		data.useAverageFilter =  $("#useAverageFilter").is(":checked");
+		data.discardPointsOfOutOfArea = $("#discardPointsOfOutOfArea").is(":checked");
+		data.useKalmanFilter = $("#useKalmanFilter").is(":checked");
+		data.active = $("#active").is(":checked");
+		$.ajax({
+			url:"save",
+			data:JSON.stringify(data),
+			type:"post",
+			contentType: "application/json;charset=utf-8",
+			success:function(data){
+				var msg = data.msg
+				if(msg == 'success'){
+					window.top.areaConfig();
+				}
+			}
+		});
+	}
+	}
+	
+}
+
+//验证信息
+function validate(){
+	debugger;
+	var result="OK";
+	var name = $("#name").val();//区域名称
+	var clockName = $("#clockSourceId").val();
+	var  allChildDiv=$('#addAnchorTest').find("div");//找到addDiv下面的所有div
+	var anchorNames='';
+	if(allChildDiv.length>0){
+		for(var a=0;a<allChildDiv.length;a++){
+			anchorNames += allChildDiv[a].innerHTML.substring(129, allChildDiv[a].innerHTML.length)+",";
+		};
+	}
+	var defaultZ_Value = $("#defaultZ_Value").val();
+	var wide = $("#locationDimensionality").val();
+	var locationTrigger = $("#locationTrigger").val();
+	var remarks = $("#comments").val();
+	var kalmanFilterLevel = $("#kalmanFilterLevel").val();
+	
+	var useAverageFilter = $("#useAverageFilter").is(":checked");
+	var discardPointsOfOutOfArea = $("#discardPointsOfOutOfArea").is(":checked");
+	var useKalmanFilter = $("#useKalmanFilter").is(":checked");
+	var active = $("#active").is(":checked");
+	if(name==null || name.trim().length == 0){
+		Dialog.alert("区域名称不能为空");
+		result="no";
+	}
+	if(clockName == null || clockName.trim().length == 0 ){
+		Dialog.alert("未选择时钟");
+		result="no";
+	}
+	if(anchorNames == null || anchorNames.trim().length == 0 ){
+		Dialog.alert("未选择基站");
+		result="no";
+	}
+	return result;
+}
+
 </script>
 </body>
 </html>

@@ -24,4 +24,6 @@ public interface AreaMapper {
 	List<Area> areaList(Map<String, Object> map);
 
 	int count(Map<String, Object> map);
+
+	List<Area> getAreaByName(String areaName);
 }

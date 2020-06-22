@@ -14,7 +14,7 @@
 			<div class="row table-query">
 				<table>
 					<tr>
-						<td><input class="form-control input-sm"  id="nav-search-input" type="text" name="NAME" value="" placeholder="时钟源名称" /></td>
+						<td><input class="form-control input-sm"  id="nav-search-input" type="text" name="NAME" value="" placeholder="区域名称" /></td>
 						<td><a class="btn btn-block btn-default btn-sm btn-flat" onclick="query();" title="检索"><i class="fa fa-search" style="color: #3C8DBC;"></i></a></td>
 					</tr>
 				</table>
@@ -28,7 +28,7 @@
 						<tr>
 							<th><input  type="checkbox" id="zcheckbox" /></th>
 							<th>区域名称</th>
-							<th>时钟源ID(名称)</th>
+							<th>时钟源</th>
 							<th>定位维度</th>
 							<th>备注</th>
 							<th>区域状态</th>
@@ -39,14 +39,15 @@
 								<tr th:each="area:${areaList}">
 											<td><input type='checkbox' name='ids' th:value="${area.id}"></td>
 											<td th:text="${area.areaName}"></td>
-											<td th:text="${area.areaId}"></td>
-											<td th:id="${area.areaId}" th:text="${area.x}"></td>
-											<td th:id="${area.areaId}" th:text="${area.y}"></td>
-											<td th:id="${area.areaId}" th:text="${area.z}"></td>
-											<td th:if="${area.online} == 'true'">
+											<td th:text="${area.clockName}"></td>
+											<td th:id="${area.id}" th:if="${area.areaWide} == 1" th:text="一维"></td>
+											<td th:id="${area.id}" th:if="${area.areaWide} == 2" th:text="二维"></td>
+											<td th:id="${area.id}" th:if="${area.areaWide} == 3" th:text="三维"></td>
+											<td th:text="${area.remarks}"></td>
+											<td th:if="${area.action} == 'true'">
 												<span>在线</span>
 											</td>
-											<td th:if="${area.online} != 'true'">
+											<td th:if="${area.action} != 'true'">
 												<span>离线</span>
 											</td>
 											
@@ -54,10 +55,10 @@
 									<td style="width: 180px;text-align: center;">
 										<button type="button" class="btn bg-purple btn-xs btn-flat" onclick="gotoAreaEditOnMap()">编辑形状</button>
 										<!-- 复制区域配置信息 -->
-										 <button type="button" class="btn bg-purple btn-xs btn-flat" onclick="copy()">复制区域</button>
-										<a title="修改"  class="btn btn-social-icon  btn-primary btn-xs btn-flat" onclick="edit();"><i class="fa fa-edit"></i></a>
+										 <button type="button" class="btn bg-purple btn-xs btn-flat" th:onclick="'javascript:copy('+${area.id}+')'">复制区域</button>
+										<a title="修改"  class="btn btn-social-icon  btn-primary btn-xs btn-flat" th:onclick="'javascript:edit('+${area.id}+')'"><i class="fa fa-edit"></i></a>
 										
-										<a class="btn btn-social-icon btn-danger btn-xs btn-flat" title="删除" onclick="del();"><i class="fa fa-trash"></i></a>
+										<a class="btn btn-social-icon btn-danger btn-xs btn-flat" title="删除" th:onclick="'javascript:del('+${area.id}+')'"><i class="fa fa-trash"></i></a>
 									</td>
 								</tr>
 						</tbody>
@@ -88,13 +89,98 @@
 	</form>
 	</div>
 
-
+<div>
+	<input type="hidden" th:value="${rtle.logitude}" th:name="longitude" th:id="longitude" maxlength="32">
+	<input type="hidden" th:value="${rtle.latitude}" th:name="latitude" th:id="latitude" maxlength="32">
+</div>
 
 <script th:src="@{'/static/staticres/test/jquery.js'}"></script>
 <!--引入弹窗组件start-->
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
 <script type="text/javascript">
+//查询
+function query(){
+	var areaName = $("#nav-search-input").val();
+	if(areaName == null || areaName.trim().length == 0){
+		Dialog.alert("输入信息有误");
+	}else{
+		$.ajax({
+			type:"GET",
+			url:"select?areaName="+areaName,
+			success:function(data){
+				if(data.msg == "success"){
+					window.location.href="areaList?ids="+data.ids;
+				}else if(data.msg== "fail"){
+					Dialog.alert("没有找到对应的区域");
+				}
+			}
+		});
+	}
+}
+//删除区域
+function del(id){
+	var d = {};
+	d.id = id;
+	Dialog.confirm("确认删除此区域吗？",function(){
+		$.ajax({
+			type:"GET",
+			url:"delete?id="+id,
+			contentType: "application/json;charset=utf-8",
+			success: function(data){
+				if(data.msg == "success"){
+					window.location.href="areaList";
+				}else{
+					Dialog.confirm("删除区域失败");
+				}
+			}
+		});
+	});
+	
+}
+var addDiag;
+//复制区域
+function copy(id){
+	 addDiag = new Dialog();
+	addDiag.Width = 770;
+	addDiag.Height = 420;
+	addDiag.Title = "复制区域";
+	addDiag.URL = "copy?id="+id;
+	addDiag.OKEvent = function(){
+		addDiag.innerFrame.contentWindow.save();
+	}
+	addDiag.CancelEvent = function(){//关闭事件
+		if(addDiag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+			location.reload();
+		}
+		addDiag.close();
+	}
+	addDiag.show(); 
+}
+//编辑形状
+function gotoAreaEditOnMap(){
+	window.parent.addEditMap('area/mapLngLat?longitude='+$("#longitude").val()+'&latitude='+$("#latitude").val());
+	/*
+	var diag = new Dialog();
+	diag.Width = '100%';
+	diag.Height = '100%';
+	diag.Title ="区域编辑形状";
+	diag.URL = 'mapLngLat?longitude='+$("#longitude").val()+'&latitude='+$("#latitude").val();
+		diag.OKEvent = function(){
+		var lonlat = diag.innerFrame.contentWindow.document.getElementById('textValue').innerHTML;
+		var strs= new Array(2); //定义数组 
+		strs=lonlat.split(","); //字符分割 
+		$("#longitude").val(strs[0].substring(0,11));
+		$("#latitude").val(strs[1].substring(0,10));
+		diag.close();
+	};
+	diag.CancelEvent = function(){ //关闭事件
+		diag.close();
+	 }; 
+	 diag.show();
+	 */
+}	
+
 //跳转页面
 function jumpPage(pages) {
 			var url = '[[${url}]]';
@@ -127,13 +213,30 @@ function jumpEnd(){
 }
 
 //添加区域配置
-var addDiag;
 function add(){
 	addDiag = new Dialog();
 	addDiag.Width = 770;
 	addDiag.Height = 420;
 	addDiag.Title = "新增";
 	addDiag.URL = "areaAdd";
+	addDiag.OKEvent = function(){
+		addDiag.innerFrame.contentWindow.save();
+	}
+	addDiag.CancelEvent = function(){//关闭事件
+		if(addDiag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+			location.reload();
+		}
+		addDiag.close();
+	}
+	addDiag.show(); 
+}
+//修改区域配置
+function edit(id){
+	addDiag = new Dialog();
+	addDiag.Width = 770;
+	addDiag.Height = 420;
+	addDiag.Title = "修改区域";
+	addDiag.URL = "areaAdd?id="+id;
 	addDiag.OKEvent = function(){
 		addDiag.innerFrame.contentWindow.save();
 	}

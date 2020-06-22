@@ -68,4 +68,10 @@ public class AreaServiceImpl implements AreaService {
 		return map;
 	}
 
+	@Override
+	public List<Area> getAreaByName(String areaName) {
+		
+		return areaMapper.getAreaByName(areaName);
+	}
+
 }
