@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head runat="server">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" th:href="@{'/static/staticres/ol6.3/ol.css'}" type="text/css">
+    <style>
+        .map {
+            height: 98%;
+            width: 100%;
+        }
+    </style>
+    <script th:src="@{'/static/staticres/ol3source/ol.js'}"></script>
+    <title>OpenLayers example</title>
+</head>
+<body>
+ <div id="map" class="map"></div>
+    <script type="text/javascript">
+        var extent = [0, 0, 418, 600];
+        var projection = new ol.proj.Projection({
+            code: 'xkcd-image',
+            units: 'pixels',
+            extent: extent
+        });
+        var map = new ol.Map({
+            layers: [
+              new ol.layer.Image({
+                  source: new ol.source.ImageStatic({
+                      url: "../static/staticres/planmap/81c18fd6d65444d6aa8f4bd5aff859f2.png",//这里添加静态图片的地址
+                      projection: projection,
+                      imageExtent: extent
+                  })
+              })
+            ],
+            target: 'map',
+            view: new ol.View({
+                projection: projection,
+                center: ol.extent.getCenter(extent),
+                zoom: 10,
+                maxZoom: 22
+            })
+        });
+        </script>
+</body>
+</html>

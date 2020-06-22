@@ -1,0 +1,48 @@
+html,body {
+    width: 100%;
+    height: 100%;
+    /* margin-left: 0px;
+    margin-top:0x; */
+    margin: 0px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+#mouse-position {
+    float: left;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 180;
+    height: 20px;
+    z-index: 2000;
+    background-color: rgba(255, 255, 255, 0.7);
+    box-shadow: 0 0 5px #bbb;
+}
+
+.custom-mouse-position {
+    color: red;
+    font-size: 16px;
+    font-family: "微软雅黑";
+}
+
+.marker {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #088;
+    border-radius: 10px;
+    background-color: #0ff;
+    opacity: 0.5;
+}
+
+.address {
+    text-decoration: none;
+    color: #aa3300;
+    font-size: 14px;
+    font-weight: bold;
+    text-shadow: black 0.1em 0.1em 0.2em;
+}

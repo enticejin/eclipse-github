@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,8 @@ import com.example.draw.rtle.rtle.model.Rtle;
 import com.example.draw.rtle.rtle.service.RtleService;
 import com.example.draw.rtle.service.AnchorService;
 import com.example.draw.rtle.utils.PageBean;
+import com.uwbhome.rtle.api.RTLEAPI;
+import com.uwbhome.rtle.utils.Misc;
 
 /** 
 * @version 创建时间：2020年6月9日 上午10:19:33
@@ -307,12 +310,17 @@ public class AreaController {
 	}
 	//区域编辑形状
 	@RequestMapping("mapLngLat")
-	public String mapLngLat(String longitude, String latitude, Model model) {
-		if(longitude != null && longitude.trim().length() > 0) {
-			model.addAttribute("longitude", longitude);
-		}
-		if(latitude != null && latitude.trim().length() > 0) {
-			model.addAttribute("latitude", latitude);
+	public String mapLngLat(String longitude, String latitude, int id, Model model) {
+		if(id > 0) {
+			Area area = areaService.selectByPrimaryKey(id);
+			model.addAttribute("areaNames",area.getAnchorId());
+			model.addAttribute("clockName",area.getClockName());
+			if(longitude != null && longitude.trim().length() > 0) {
+				model.addAttribute("longitude", longitude);
+			}
+			if(latitude != null && latitude.trim().length() > 0) {
+				model.addAttribute("latitude", latitude);
+			}
 		}
 		return "area/edit_map";
 	}

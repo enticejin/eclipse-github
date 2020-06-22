@@ -6,20 +6,20 @@
     <result column="area_name" jdbcType="VARCHAR" property="areaName" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="area_wide" jdbcType="VARCHAR" property="areaWide" />
-    <result column="clock_id" jdbcType="INTEGER" property="clockId" />
+    <result column="clock_name" jdbcType="VARCHAR" property="clockName" />
     <result column="action_type" jdbcType="VARCHAR" property="actionType" />
     <result column="z" jdbcType="VARCHAR" property="z" />
     <result column="average_filtering" jdbcType="VARCHAR" property="averageFiltering" />
     <result column="kalman" jdbcType="VARCHAR" property="kalman" />
-    <result column="anchor_id" jdbcType="INTEGER" property="anchorId" />
+    <result column="anchor_id" jdbcType="VARCHAR" property="anchorId" />
     <result column="use_average_filter" jdbcType="VARCHAR" property="useAverageFilter" />
     <result column="use_boundary_value" jdbcType="VARCHAR" property="useBoundaryValue" />
     <result column="use_kalman_filter" jdbcType="VARCHAR" property="useKalmanFilter" />
     <result column="action" jdbcType="VARCHAR" property="action" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, area_name, remarks, area_wide, clock_id, action_type, z, average_filtering, kalman, 
-    anchor_id, use_average_filter, use_boundary_value, use_kalman_filter, action
+    id, area_name, remarks, area_wide, clock_name, action_type, z, average_filtering, 
+    kalman, anchor_id, use_average_filter, use_boundary_value, use_kalman_filter, action
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -33,14 +33,14 @@
   </delete>
   <insert id="insert" parameterType="com.example.demo.model.Area">
     insert into area (id, area_name, remarks, 
-      area_wide, clock_id, action_type, 
+      area_wide, clock_name, action_type, 
       z, average_filtering, kalman, 
       anchor_id, use_average_filter, use_boundary_value, 
       use_kalman_filter, action)
     values (#{id,jdbcType=INTEGER}, #{areaName,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, 
-      #{areaWide,jdbcType=VARCHAR}, #{clockId,jdbcType=INTEGER}, #{actionType,jdbcType=VARCHAR}, 
+      #{areaWide,jdbcType=VARCHAR}, #{clockName,jdbcType=VARCHAR}, #{actionType,jdbcType=VARCHAR}, 
       #{z,jdbcType=VARCHAR}, #{averageFiltering,jdbcType=VARCHAR}, #{kalman,jdbcType=VARCHAR}, 
-      #{anchorId,jdbcType=INTEGER}, #{useAverageFilter,jdbcType=VARCHAR}, #{useBoundaryValue,jdbcType=VARCHAR}, 
+      #{anchorId,jdbcType=VARCHAR}, #{useAverageFilter,jdbcType=VARCHAR}, #{useBoundaryValue,jdbcType=VARCHAR}, 
       #{useKalmanFilter,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.example.demo.model.Area">
@@ -58,8 +58,8 @@
       <if test="areaWide != null">
         area_wide,
       </if>
-      <if test="clockId != null">
-        clock_id,
+      <if test="clockName != null">
+        clock_name,
       </if>
       <if test="actionType != null">
         action_type,
@@ -102,8 +102,8 @@
       <if test="areaWide != null">
         #{areaWide,jdbcType=VARCHAR},
       </if>
-      <if test="clockId != null">
-        #{clockId,jdbcType=INTEGER},
+      <if test="clockName != null">
+        #{clockName,jdbcType=VARCHAR},
       </if>
       <if test="actionType != null">
         #{actionType,jdbcType=VARCHAR},
@@ -118,7 +118,7 @@
         #{kalman,jdbcType=VARCHAR},
       </if>
       <if test="anchorId != null">
-        #{anchorId,jdbcType=INTEGER},
+        #{anchorId,jdbcType=VARCHAR},
       </if>
       <if test="useAverageFilter != null">
         #{useAverageFilter,jdbcType=VARCHAR},
@@ -146,8 +146,8 @@
       <if test="areaWide != null">
         area_wide = #{areaWide,jdbcType=VARCHAR},
       </if>
-      <if test="clockId != null">
-        clock_id = #{clockId,jdbcType=INTEGER},
+      <if test="clockName != null">
+        clock_name = #{clockName,jdbcType=VARCHAR},
       </if>
       <if test="actionType != null">
         action_type = #{actionType,jdbcType=VARCHAR},
@@ -162,7 +162,7 @@
         kalman = #{kalman,jdbcType=VARCHAR},
       </if>
       <if test="anchorId != null">
-        anchor_id = #{anchorId,jdbcType=INTEGER},
+        anchor_id = #{anchorId,jdbcType=VARCHAR},
       </if>
       <if test="useAverageFilter != null">
         use_average_filter = #{useAverageFilter,jdbcType=VARCHAR},
@@ -184,12 +184,12 @@
     set area_name = #{areaName,jdbcType=VARCHAR},
       remarks = #{remarks,jdbcType=VARCHAR},
       area_wide = #{areaWide,jdbcType=VARCHAR},
-      clock_id = #{clockId,jdbcType=INTEGER},
+      clock_name = #{clockName,jdbcType=VARCHAR},
       action_type = #{actionType,jdbcType=VARCHAR},
       z = #{z,jdbcType=VARCHAR},
       average_filtering = #{averageFiltering,jdbcType=VARCHAR},
       kalman = #{kalman,jdbcType=VARCHAR},
-      anchor_id = #{anchorId,jdbcType=INTEGER},
+      anchor_id = #{anchorId,jdbcType=VARCHAR},
       use_average_filter = #{useAverageFilter,jdbcType=VARCHAR},
       use_boundary_value = #{useBoundaryValue,jdbcType=VARCHAR},
       use_kalman_filter = #{useKalmanFilter,jdbcType=VARCHAR},
