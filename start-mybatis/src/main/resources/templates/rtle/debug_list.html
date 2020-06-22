@@ -27,7 +27,8 @@
 					<tbody>
 					<!-- 开始循环 -->	
 					<tr th:if="${flag  == 'anchor'}" th:each="var,varStat:${anchorList}">
-						<td><input type='checkbox' th:value="${var.anchorName}" th:id="${varStat.index}+1" name="ids" /></td>
+						<!-- <td><input type='checkbox' th:value="${var.anchorName}" th:id="${varStat.index}+1" name="ids" /></td> -->
+						<td><input type='checkbox' th:value="${var.anchorName}" th:id="${var.id}" name="ids" /></td>
 						<td th:text="${var.anchorName}"></td>
 					</tr>
 					<tr class="main_info" th:if="${anchorList} == null">
@@ -50,6 +51,23 @@ function getAnchorStrs(){
 			}
 			else{
 				str += ',' + document.getElementsByName('ids')[i].value;
+			}
+		}
+	}
+	return str;
+}
+//获取Anchorid
+function getAnchorIds(){
+	var str = '';
+	//遍历debug_areas
+	for(var i =0;i < document.getElementsByName('ids').length;i++){
+		
+		if(document.getElementsByName('ids')[i].checked){
+			if(str == ''){
+				str += document.getElementsByName('ids')[i].getAttribute('id');
+			}
+			else{
+				str += ',' + document.getElementsByName('ids')[i].getAttribute('id');
 			}
 		}
 	}

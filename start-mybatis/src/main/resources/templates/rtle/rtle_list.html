@@ -189,6 +189,7 @@
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
 <script type="text/javascript">
+	//设置中心经纬度
 	function setLonLat(){
 		var diag = new Dialog();
 		diag.Width = '70%';
@@ -313,7 +314,7 @@
 		var div_s = myDiv.getElementsByTagName("div");
 		var anchorName = '';
 		for(var i=0;i<div_s.length;i++){
-			anchorName += div_s.item(i).innerHTML.substring(div_s.item(i).innerHTML.length-9,div_s.item(i).innerHTML.length)+",";
+			anchorName += div_s.item(i).innerHTML.substring(129,div_s.item(i).innerHTML.length)+",";
 		}
 		return anchorName;
 	}
