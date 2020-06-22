@@ -159,7 +159,7 @@
 	function del(id){
 		var d = {};
 		d.id = id;
-		Dialog.confirm("确认删除此基站吗？",function(){
+		Dialog.confirm("确认删除吗？",function(){
 			$.ajax({
 				type:"GET",
 				url:"delete?id="+id,
@@ -168,7 +168,7 @@
 					if(data.msg == "success"){
 						window.top.clockConfig();
 					}else{
-						Dialog.confirm("删除基站失败");
+						Dialog.confirm("删除失败");
 					}
 				}
 			});
