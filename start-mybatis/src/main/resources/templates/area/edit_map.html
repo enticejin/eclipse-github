@@ -31,6 +31,12 @@ var openSeaMapLayer = new ol.layer.Tile({
   })
 });
 //加载地图
+var extent = [parseFloat(longitude), parseFloat(latitude), 418, 600];
+var projection = new ol.proj.Projection({
+     code: 'xkcd-image',
+     units: 'pixels',
+     extent: extent
+ });
 var map = new ol.Map({
     controls: ol.control.defaults().extend([
         new ol.control.FullScreen(),
@@ -44,16 +50,28 @@ var map = new ol.Map({
     	openSeaMapLayer,
         new ol.layer.Tile({
             source: new ol.source.OSM()
+        }),
+        new ol.layer.Image({
+            source: new ol.source.ImageStatic({
+                url:"../static/staticres/planmap/81c18fd6d65444d6aa8f4bd5aff859f2.png" ,//这里添加静态图片的地址
+                projection: projection,
+                imageExtent: extent
+            })
         })
     ],
     target: 'map',
     //加载视图
     view: new ol.View({
+    	projection: projection,
+        center: ol.extent.getCenter(extent),
+        /*
     	//设置中心坐标位置为贵阳
         center: ol.proj.transform(
             [parseFloat(longitude), parseFloat(latitude)], 'EPSG:4326', 'EPSG:3857'),
-            //缩放比例
-        zoom: 20
+        */
+        //缩放比例
+        zoom: 2,
+        maxZoom:22
     })
 });
 //添加移动鼠标显示地图经纬度功能
