@@ -58,7 +58,7 @@ public class RtleController {
 		model.addAttribute("flag", "anchor");
 		return "rtle/debug_list";
 	}
-	//选择基站调试
+	//选择区域调试
 	@RequestMapping("/selectArea")
 	public String selectArea(Model model) {
 		List<String> areaNameList = new ArrayList<String>();
@@ -69,6 +69,20 @@ public class RtleController {
 		model.addAttribute("varList", areaNameList);
 		model.addAttribute("areaList", areaList);
 		model.addAttribute("flag", "area");
+		return "rtle/debug_list";
+	}
+	//选择基站调试
+	@RequestMapping("/selectTag")
+	public String selectTag(Model model) {
+		List<String> tagNameList = new ArrayList<String>();
+		tagNameList.add("tag-01");
+		tagNameList.add("tag-02");
+		tagNameList.add("tag-03");
+		tagNameList.add("tag-04");
+		tagNameList.add("tag-05");
+		tagNameList.add("tag-06");
+		model.addAttribute("tagNameList", tagNameList);
+		model.addAttribute("flag", "tag");
 		return "rtle/debug_list";
 	}
 }

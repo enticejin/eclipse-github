@@ -266,10 +266,10 @@
 		diag.Title = "调试区域选择";
 		diag.URL="selectArea";
 		 diag.OKEvent = function(){
-			  	var receivestr=diag.innerFrame.contentWindow.getAnchorStrs();
+			  	var receivestr=diag.innerFrame.contentWindow.getAreaStrs();
 		 		var showName=receivestr.split(',');
 		 		var flag = 1;
-		 		var anchorName = getDebugAnchorName();
+		 		var areaName = getDebugAreaName();
 		 		console.info("t:"+showName);
 		 		if(showName[0]=='')
 		 			{
@@ -278,16 +278,16 @@
 		 		else{
 		 				for(var i =0;i < showName.length;i++){
 		 					var id= showName[i];
-		 					var anchorArray = anchorName.split(",");
-		 					for(var j =0 ; j < anchorArray.length ;j++){
-		 						if(id == anchorArray[j]){
+		 					var areaArray = areaName.split(",");
+		 					for(var j =0 ; j < areaArray.length ;j++){
+		 						if(id == areaArray[j]){
 		 							Dialog.alert(id+"--已添加");
 		 							flag = 0;
 		 							break;
 		 						}
 		 					}
 		 					if(flag == 1){
-			 					$("#addAnchorTest").append('<div style="float: left;background:#3c8dbc;border:1px solid #aaa;margin-left:2px;padding:1px 10px;border-radius:4px;" id='
+			 					$("#addAreaTest").append('<div style="float: left;background:#3c8dbc;border:1px solid #aaa;margin-left:2px;padding:1px 10px;border-radius:4px;" id='
 			 					+id+' value="'+id+'"><span style="cursor:pointer;font-weight:bold;margin-right:5px;color: rgba(255, 255, 255, 0.7);" onclick="delebase(this)">×</span>'
 			 					+showName[i]+'</div>');
 		 					}else{
@@ -296,7 +296,7 @@
 		 				}
 		 				
 		 				if(flag == 1){
-			 				$("#debugAnchorList").val(anchorName);
+			 				$("#debugAreaList").val(areaName);
 		 				}
 		 				
 		 				diag.close();
@@ -307,7 +307,59 @@
 				 };
 		diag.show();
 	}
-	
+	//调试标签
+	function selectTag(){
+		var diag = new Dialog();
+		diag.Width = "50%";
+		diag.Height= "60%";
+		diag.Title = "调试区域选择";
+		diag.URL="selectTag";
+		 diag.OKEvent = function(){
+			  	var receivestr=diag.innerFrame.contentWindow.getTagStrs();
+		 		var showName=receivestr.split(',');
+		 		var flag = 1;
+		 		var tagName = getDebugTagName();
+		 		console.info("t:"+showName);
+		 		if(showName[0]=='')
+		 			{
+						Dialog.alert("提示：你没有选择任何内容,若想取消选择，请点击【取消】按钮");
+		 			}
+		 		else{
+		 				for(var i =0;i < showName.length;i++){
+		 					var id= showName[i];
+		 					var tagArray = tagName.split(",");
+		 					for(var j =0 ; j < tagArray.length ;j++){
+		 						if(id == tagArray[j]){
+		 							Dialog.alert(id+"--已添加");
+		 							flag = 0;
+		 							break;
+		 						}
+		 					}
+		 					if(flag == 1){
+			 					$("#addTagTest").append('<div style="float: left;background:#3c8dbc;border:1px solid #aaa;margin-left:2px;padding:1px 10px;border-radius:4px;" id='
+			 					+id+' value="'+id+'"><span style="cursor:pointer;font-weight:bold;margin-right:5px;color: rgba(255, 255, 255, 0.7);" onclick="delebase(this)">×</span>'
+			 					+showName[i]+'</div>');
+		 					}else{
+		 						break;
+		 					}
+		 				}
+		 				
+		 				if(flag == 1){
+			 				$("#debugTagList").val(tagName);
+		 				}
+		 				
+		 				diag.close();
+		 			}
+				};
+		 diag.CancelEvent = function(){ //关闭事件
+					diag.close();
+				 };
+		diag.show();
+	}
+	//保存
+	function save(){
+		
+	}
 	//获取调试基站的名称
 	function getDebugAnchorName(){
 		var myDiv = document.getElementById("addAnchorTest");
@@ -317,6 +369,26 @@
 			anchorName += div_s.item(i).innerHTML.substring(129,div_s.item(i).innerHTML.length)+",";
 		}
 		return anchorName;
+	}
+	//获取调试区域的名称
+	function getDebugAreaName(){
+		var myDiv = document.getElementById("addAreaTest");
+		var div_s = myDiv.getElementsByTagName("div");
+		var areaName = '';
+		for(var i=0;i<div_s.length;i++){
+			areaName += div_s.item(i).innerHTML.substring(129,div_s.item(i).innerHTML.length)+",";
+		}
+		return areaName;
+	}
+	//获取调试标签的名称
+	function getDebugTagName(){
+		var myDiv = document.getElementById("addTagTest");
+		var div_s = myDiv.getElementsByTagName("div");
+		var tagName = '';
+		for(var i=0;i<div_s.length;i++){
+			tagName += div_s.item(i).innerHTML.substring(129,div_s.item(i).innerHTML.length)+",";
+		}
+		return tagName;
 	}
 	//删除元素
 	function delebase(divid){

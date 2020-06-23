@@ -25,13 +25,29 @@
 						</tr>
 					</thead>
 					<tbody>
-					<!-- 开始循环 -->	
+					<!-- 开始循环基站 -->	
 					<tr th:if="${flag  == 'anchor'}" th:each="var,varStat:${anchorList}">
 						<!-- <td><input type='checkbox' th:value="${var.anchorName}" th:id="${varStat.index}+1" name="ids" /></td> -->
 						<td><input type='checkbox' th:value="${var.anchorName}" th:id="${var.id}" name="ids" /></td>
 						<td th:text="${var.anchorName}"></td>
 					</tr>
-					<tr class="main_info" th:if="${anchorList} == null">
+					<tr class="main_info" th:if="${anchorList == null && flag == 'anchor'}">
+							<td colspan="100" style="text-align: center;"  >没有相关数据</td>
+					</tr>
+					<!-- 区域 -->
+					<tr th:if="${flag  == 'area'}" th:each="var,varStat:${areaList}">
+						<td><input type='checkbox' th:value="${var.areaName}" th:id="${var.id}" name="areaids" /></td>
+						<td th:text="${var.areaName}"></td>
+					</tr>
+					<tr class="main_info" th:if="${varList == null && flag == 'area'}">
+						<td colspan="100" style="text-align: center;"  >没有相关数据</td>
+					</tr>
+					<!-- 标签 -->
+					<tr th:if="${flag  == 'tag'}" th:each="var,varStat:${tagNameList}">
+						<td><input type='checkbox' th:value="${var}" th:id="${var}" name="tagids" /></td>
+						<td th:text="${var}"></td>
+					</tr>
+					<tr class="main_info" th:if="${varList == null && flag == 'flag'}">
 						<td colspan="100" style="text-align: center;"  >没有相关数据</td>
 					</tr>
 				</table>
@@ -40,17 +56,17 @@
 	</div>
 <script type="text/javascript">
 //将选择的区域返回至区域调试列表中
-function getAnchorStrs(){
+function getAreaStrs(){
 	var str = '';
 	//遍历debug_areas
-	for(var i =0;i < document.getElementsByName('ids').length;i++){
+	for(var i =0;i < document.getElementsByName('areaids').length;i++){
 		
-		if(document.getElementsByName('ids')[i].checked){
+		if(document.getElementsByName('areaids')[i].checked){
 			if(str == ''){
-				str += document.getElementsByName('ids')[i].value;
+				str += document.getElementsByName('areaids')[i].value;
 			}
 			else{
-				str += ',' + document.getElementsByName('ids')[i].value;
+				str += ',' + document.getElementsByName('areaids')[i].value;
 			}
 		}
 	}
@@ -68,6 +84,23 @@ function getAnchorIds(){
 			}
 			else{
 				str += ',' + document.getElementsByName('ids')[i].getAttribute('id');
+			}
+		}
+	}
+	return str;
+}
+//将选择的标签返回至调试列表中
+function getTagStrs(){
+	var str = '';
+	//遍历debug_areas
+	for(var i =0;i < document.getElementsByName('tagids').length;i++){
+		
+		if(document.getElementsByName('tagids')[i].checked){
+			if(str == ''){
+				str += document.getElementsByName('tagids')[i].value;
+			}
+			else{
+				str += ',' + document.getElementsByName('tagids')[i].value;
 			}
 		}
 	}
