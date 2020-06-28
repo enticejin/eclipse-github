@@ -35,6 +35,7 @@
       <tr th:if="${varList != null}" th:each="var,varStat:${varList}" >
         <td th:text="${varStat.index}+1"></td>
         <td th:text="${var.filName}"></td>
+        <td th:text="${var.fileSize}"></td>
         <td>
         <button type="button" class="layui-btn layui-btn-sm" th:onclick="'javascript:deleteFile('+${var.id}+')'"><i class="layui-icon"></i></button>
         <button type="button" class="layui-btn layui-btn-warm layui-btn-radius" th:onclick="'javascript:preOpen('+${var.id}+')'">查看图片</button>
