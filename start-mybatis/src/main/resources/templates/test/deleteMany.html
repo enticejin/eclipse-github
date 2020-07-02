@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>批量删除</title>
+</head>
+<body>
+		<table border="1" width="70%">
+		<tr>
+			<th width="20"></th>
+			<th>编号</th>
+			<th>姓名</th>
+			<th>操作</th>
+		</tr>
+		<tr>
+			<td><input type="checkbox" value="1" name="ids"></td>
+			<td>1</td>
+			<td>小王</td>
+			<td>
+				<a href="javascript:;">编辑</a>
+				<a href="javascript:;">删除</a>
+			</td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" value="2" name="ids"></td>
+			<td>2</td>
+			<td>小李</td>
+			<td>
+				<a href="javascript:;">编辑</a>
+				<a href="javascript:;">删除</a>
+			</td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" value="3" name="ids"></td>
+			<td>3</td>
+			<td>小黄</td>
+			<td>
+				<a href="javascript:;">编辑</a>
+				<a href="javascript:;">删除</a>
+			</td>
+		</tr>
+		<tr>
+			<td><input type="checkbox" value="4" name="ids"></td>
+			<td>4</td>
+			<td>小明</td>
+			<td>
+				<a href="javascript:;">编辑</a>
+				<a href="javascript:;">删除</a>
+			</td>
+		</tr>
+	</table>
+	<input type="button" value="全选" onclick="checkedAll();">
+	<input type="button" value="清除" onclick="checkedFalse();">
+	<input type="button" value="反选" onclick="checkedF();">
+	
+<script th:src="@{'/static/staticres/test/jquery.js'}"></script>	
+<script type="text/javascript">
+//全选
+function checkedAll() {
+	$(":checkbox[name='ids']").prop("checked",true);
+}
+
+//清除
+function checkedFalse() {
+	$(":checkbox[name='ids']").prop("checked",false);
+}
+
+//反选
+function checkedF(){
+	var $ids = $(":checkbox[name='ids']");
+	/*for(var i = 0; i <$ids.length; i++){
+		var $ck = $ids.eq(i);
+		$ck.prop("checked",!$ck.prop("checked"))
+	}*/
+	$ids.each(function (n) {
+		var $ck = $ids.eq(n);
+		$ck.prop("checked",!$ck.prop("checked"))
+	})
+}
+</script>
+</body>
+</html>
