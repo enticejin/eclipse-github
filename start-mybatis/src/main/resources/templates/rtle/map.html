@@ -13,7 +13,7 @@
 </head>
 <body>
 	<div id="map" class="map"></div>
-	<div style="background-color: #999;"><span>鼠标点击所在位置坐标：</span><span th:name="textValue" id='textValue' th:value="${longitude}"></span></div>
+	<div style="background-color: #999;"><span>鼠标点击所在位置坐标：</span><span th:name="textValue" id='textValue' th:text="${longitude}+','+${latitude}"></span></div>
 	<input type="hidden" id="latitude"  th:value="${latitude}"> 
 	<input type="hidden" id="longitude"  th:value="${longitude}">
 <!-- jQuery 2.2.3 -->
