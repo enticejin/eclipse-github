@@ -26,7 +26,7 @@
 				<table id="table_report" class="table table-striped table-condensed table-bordered table-hover" style="margin:5px 0px 0px 2px;">
 					<thead>
 						<tr>
-							<th><input  type="checkbox" id="zcheckbox" /></th>
+							<th><input  type="checkbox" id="zcheckbox" name="checkbox" onclick="checkedAll()"/></th>
 							<th>时钟编号</th>
 							<th>时钟名称</th>
 							<th>序列号</th>
@@ -86,7 +86,11 @@
 								</tr>
 						</tbody>
 				</table>
+				<a class="btn btn-small btn-success btn-sm btn-flat" onclick="selectAll();">全选</a>
+				<a class="btn btn-small btn-success btn-sm btn-flat" onclick="checkedF();">反选</a>
+				<a class="btn btn-small btn-success btn-sm btn-flat" onclick="checkedFalse();">清除</a>
 				<a class="btn btn-small btn-success btn-sm btn-flat" onclick="add();">新增</a>
+				<a class="btn btn-social-icon btn-danger btn-xs btn-flat" title="批量删除"  onclick="deleteAll()"><i class="fa fa-trash"></i></a>
 		</div>
 		<form id="pageForm" >
 		<input type="hidden" id="pages" name="pages">
@@ -119,6 +123,39 @@
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
 <script type="text/javascript">
+	//全选
+	function checkedAll() {
+		var checkbox = document.getElementById("zcheckbox").checked;
+		
+		$(":checkbox[name='ids']").prop("checked",checkbox);
+	}
+	function selectAll(){
+		$(":checkbox[name='ids']").prop("checked",true);
+	}
+	//反选
+	function checkedF(){
+		var $ids = $(":checkbox[name='ids']");
+		/*for(var i = 0; i <$ids.length; i++){
+			var $ck = $ids.eq(i);
+			$ck.prop("checked",!$ck.prop("checked"))
+		}*/
+		$ids.each(function (n) {
+			var $ck = $ids.eq(n);
+			$ck.prop("checked",!$ck.prop("checked"))
+		})
+	}
+	//清除
+	function checkedFalse() {
+		$(":checkbox[name='ids']").prop("checked",false);
+		$(":checkbox[id='zcheckbox']").prop("checked",false);
+	}
+	//批量删除
+	function deleteAll(){
+		var $ids = $(":checkbox[name='ids']");
+		$ids.each(function(n){
+			
+		})
+	}
 	//添加新的时钟
 	function add(){
 		var addClockDialog = new Dialog();

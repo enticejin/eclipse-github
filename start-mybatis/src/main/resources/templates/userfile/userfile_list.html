@@ -40,13 +40,13 @@
         <button type="button" class="layui-btn layui-btn-sm" th:onclick="'javascript:deleteFile('+${var.id}+')'"><i class="layui-icon"></i></button>
         <button type="button" class="layui-btn layui-btn-warm layui-btn-radius" th:onclick="'javascript:preOpen('+${var.id}+')'">查看图片</button>
         </td>
-        
       </tr>
       <tr th:if="${varList == null}">
        
       </tr>
     </tbody>
   </table>
+  <div id="demo7"></div>
 </div>
  <button type="button" class="layui-btn layui-btn-normal" onclick="addFile()">添加文件</button>
 <script th:src="@{'/static/staticres/layui/layui.js'}"></script>
@@ -56,6 +56,21 @@
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
 <script type="text/javascript">
+
+layui.use(['laypage', 'layer'], function(){
+	  var laypage = layui.laypage
+	  ,layer = layui.layer;
+	  //完整功能
+	  laypage.render({
+	    elem: 'demo7'
+	    ,count: 100
+	    ,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+	    ,jump: function(obj){
+	      console.log(obj)
+	    }
+	  });  
+});
+
 //添加文件
 function addFile(){
 	var dialog = new Dialog();
