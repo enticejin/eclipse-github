@@ -25,6 +25,14 @@ public class UserFile {
 	private String filName;
 	@Column(name = "file_size", nullable = false)
 	private String fileSize;
+	@Column(name = "flag", nullable = false)
+	private String flag;
+	public String getFlag() {
+		return flag;
+	}
+	public void setFlag(String flag) {
+		this.flag = flag;
+	}
 	public int getId() {
 		return id;
 	}
@@ -45,8 +53,9 @@ public class UserFile {
 	}
 	@Override
 	public String toString() {
-		return "UserFile [id=" + id + ", filName=" + filName + ", fileSize=" + fileSize + "]";
+		return "UserFile [id=" + id + ", filName=" + filName + ", fileSize=" + fileSize + ", flag=" + flag + "]";
 	}
+	
 	
 
 }

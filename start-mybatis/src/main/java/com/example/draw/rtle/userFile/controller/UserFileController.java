@@ -8,7 +8,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,9 +27,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.draw.rtle.model.Anchor;
 import com.example.draw.rtle.userFile.model.UserFile;
 import com.example.draw.rtle.userFile.service.UserFileService;
 import com.example.draw.rtle.utils.FileUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 
 /** 
@@ -29,12 +41,20 @@ import com.example.draw.rtle.utils.FileUtil;
 @Controller
 @RequestMapping("/userFile")
 public class UserFileController {
-	
+	static Logger logger = LoggerFactory.getLogger(UserFileController.class);
 	@Autowired 
 	private UserFileService userFileService;
 	/*
 	 * 用户文件列表页
 	 */
+	/*
+	@RequestMapping("/userFileList")
+	public String findAll(Model model) {
+		List<UserFile> userFileList = userFileService.findAll();
+		model.addAttribute("varList", userFileList);
+		return "userfile/userfile_list";
+	}
+	*/
 	@RequestMapping("/userFileList")
 	public String findAll(Model model) {
 		List<UserFile> userFileList = userFileService.findAll();
@@ -137,4 +157,37 @@ public class UserFileController {
 		json.put("msg", "success");
 		return json;
 	}
+/**
+ * 分页	
+ * @param session
+ * @param page
+ * @param limit
+ * @return
+ */
+	@RequestMapping("selectUserFileTable")
+	@ResponseBody
+	public Map<String,Object> selectUserFileTable(@RequestParam(required = false, defaultValue = "1") int page,
+													@RequestParam(required = false)int limit){
+		// 使用Pagehelper传入当前页数和页面显示条数会自动为我们的select语句加上limit查询
+				// 从他的下一条sql开始分页
+//				PageHelper.startPage(page, limit);
+//				List<UserFile> userFiles = userFileService.findAll();
+//				// 使用pageInfo包装查询
+//				PageInfo<UserFile> rolePageInfo = new PageInfo<>(userFiles);//
+//				Map<String,Object> map=new HashMap<String,Object>();
+//				map.put("code",0);
+//				map.put("msg","success");
+//				map.put("count",rolePageInfo.getTotal());
+//				map.put("data",rolePageInfo.getList());
+//				return map;
+		Map<String,Object> map=new HashMap<String,Object>();
+		UserFile userFile = new UserFile();
+		List<UserFile> userFileList = userFileService.list(userFile, page, limit);
+		Long count = userFileService.getCount(userFile);
+		map.put("code", "0");
+		map.put("count", count);
+		map.put("data", userFileList);
+		return map;	
+	}
+	
 }

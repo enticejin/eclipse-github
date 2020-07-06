@@ -15,7 +15,7 @@
   <legend>用户文件表格</legend>
 </fieldset>
  
-<div class="layui-form">
+<!-- <div class="layui-form">
   <table class="layui-table">
     <colgroup>
       <col width="150">
@@ -42,12 +42,12 @@
         </td>
       </tr>
       <tr th:if="${varList == null}">
-       
+       <td>没有相关数据显示</td>
       </tr>
     </tbody>
   </table>
-  <div id="demo7"></div>
-</div>
+</div> -->
+<table id="dates" lay-filter="test"></table>
  <button type="button" class="layui-btn layui-btn-normal" onclick="addFile()">添加文件</button>
 <script th:src="@{'/static/staticres/layui/layui.js'}"></script>
 <script th:src="@{'/static/staticres/test/jquery.js'}"></script>
@@ -56,21 +56,32 @@
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
 <script type="text/javascript">
-
-layui.use(['laypage', 'layer'], function(){
-	  var laypage = layui.laypage
-	  ,layer = layui.layer;
-	  //完整功能
-	  laypage.render({
-	    elem: 'demo7'
-	    ,count: 100
-	    ,layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
-	    ,jump: function(obj){
-	      console.log(obj)
-	    }
-	  });  
-});
-
+layui.use('table', function(){
+    var table = layui.table;
+                table.render({
+            elem: '#dates'
+            ,url:'/userFile/selectUserFileTable'
+            ,limit:5 //默认为10
+            ,cols: [
+            	
+            	[
+                {field:'id', width:170, title: '文件ID', sort: true} //sort：true页面可进行排序操作
+                ,{field:'filName', width:400, title: '文件名称'}
+                ,{field:'fileSize',width:170,  title: '文件大小', sort: true}
+                ,{field:'level',width:500, height:50, title: '操作',templet: function(d){
+                    return'<a id="delete" class="layui-btn layui-btn-xs layui-btn-danger" onclick="deleteFile('+d.id+');">删除</a> ';
+                    }
+                }
+            	]
+            	
+            		]
+            ,page: true
+            ,limits:[5,10,15,20]
+            ,done:function(res, curr, count){
+                //数据的回调用，可不写
+            }
+        });
+    });
 //添加文件
 function addFile(){
 	var dialog = new Dialog();

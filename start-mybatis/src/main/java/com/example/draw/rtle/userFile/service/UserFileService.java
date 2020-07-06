@@ -2,6 +2,10 @@ package com.example.draw.rtle.userFile.service;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.example.draw.rtle.userFile.model.UserFile;
 
 /** 
@@ -29,6 +33,20 @@ public interface UserFileService {
 	 * 根据id查询
 	 */
 	public Optional<UserFile>  findById(int id);
+	/**
+	 * 分页
+	 * @param userFile
+	 * @param page
+	 * @param limit
+	 * @return
+	 */
+	public List<UserFile> list(UserFile userFile, int page, int limit);
+	/**
+	 * 获取总数
+	 * @param userFile
+	 * @return
+	 */
+	public Long getCount(UserFile userFile);
 	
 	
 }
