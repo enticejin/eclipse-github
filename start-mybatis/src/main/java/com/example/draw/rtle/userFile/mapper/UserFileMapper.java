@@ -16,9 +16,18 @@ import com.example.draw.rtle.userFile.model.UserFile;
 */
 @Repository
 public interface UserFileMapper extends JpaRepository<UserFile, Integer>, Serializable {
-
+	/**
+	 * 获取总数
+	 * @param specification
+	 * @return
+	 */
 	Long count(Specification<UserFile> specification);
-
+	/**
+	 * 查找所有的数据
+	 * @param specification
+	 * @param pageable
+	 * @return
+	 */
 	Page<UserFile> findAll(Specification<UserFile> specification, Pageable pageable);
     
 }
