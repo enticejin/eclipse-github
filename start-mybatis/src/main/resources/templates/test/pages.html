@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+ <link rel="stylesheet" th:href="@{'/static/staticres/layui/css/layui.css'}"  media="all">
+<title>分页测试</title>
+</head>
+<body>
+<table id="dates" lay-filter="test"></table>
+<script th:src="@{'/static/staticres/layui/layui.js'}"></script>
+<script type="text/javascript" th:inline="none">
+    layui.use('table', function(){
+    var table = layui.table;
+                table.render({
+            elem: '#dates'
+            ,url:'/page/selectusertable'
+            ,limit:2 //默认为10
+            ,cols: [[
+                {field:'anchorId', width:170, title: '基站ID', sort: true} //sort：true页面可进行排序操作
+                ,{field:'anchorName', width:150, title: '基站名称'}
+                ,{field:'serialNo',width:170,  title: '序列号', sort: true}
+                ,{field:'x',width:170,  title: 'x'}
+                ,{field:'y',width:170,  title: 'y'}
+                ,{field:'z',width:170,  title: 'z'}
+                ,{field:'level',width:100,  title: '操作',templet: function(d){
+                        return '<a class="layui-btn layui-btn-xs layui-btn-danger" onclick="dele('+d.id+');">删除</a>';
+                    }
+                }
+            ]]
+            ,page: true
+            ,done:function(res, curr, count){
+                //数据的回调用，可不写
+            }
+        });
+    });
+</script>
+</body>
+</html>
