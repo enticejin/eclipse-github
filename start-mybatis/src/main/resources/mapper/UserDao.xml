@@ -31,9 +31,9 @@
     <insert id="addUser" parameterType="com.example.draw.rtle.model.User">
         INSERT INTO
         <include refid="table"/>
-        (name,email)
+        (name)
         VALUES
-        (#{name},#{email})
+        (#{name})
     </insert>
 
     <!-- 改 -->
@@ -42,7 +42,7 @@
         <include refid="table"/>
         SET
         <!--<if test="name != null">name = #{name}</if>-->
-        name  = #{name},email = #{email},status = #{status}
+        name  = #{name}
         WHERE
         id = #{id}
     </update>

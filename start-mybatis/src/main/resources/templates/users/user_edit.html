@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" th:href="@{'/static/staticres/layui/css/layui.css'}"  media="all">
+<title></title>
+</head>
+<body>
+	<div th:if="${flag} == 'add'">
+		
+    <form id="userForm" class="layui-form" action="">
+      <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-block">
+          <input id="userName" type="text" name="title" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">密码框</label>
+        <div class="layui-input-inline">
+          <input id="password" type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请输入不含中文字符的密码</div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">密码确认</label>
+        <div class="layui-input-inline">
+          <input id="configPassword" type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请保证两次输入的密码一致</div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit lay-filter="formDemo" onclick="save();">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+	</div>
+	<div th:if="${flag} == 'update'">
+		
+    <form id="userForm" class="layui-form" action="">
+      <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-block">
+          <input id="userName" type="text" th:value="${user.name}" name="title" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">密码框</label>
+        <div class="layui-input-inline">
+          <input id="password" type="password" name="password" th:value="${user.password}" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请输入不含中文字符的密码</div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">密码确认</label>
+        <div class="layui-input-inline">
+          <input id="configPassword" type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-form-mid layui-word-aux">请保证两次输入的密码一致</div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" lay-submit lay-filter="formDemo" onclick="save();">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+	</div>
+<script th:src="@{'/static/staticres/layui/layui.js'}"></script>
+<script th:src="@{'/static/staticres/test/jquery.js'}"></script>
+
+<!--引入弹窗组件start-->
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
+<script>
+
+//保存
+function save() {
+	var data = {};
+	data.flag = '[[${flag}]]',
+	data.userName=  $("#userName").val(),
+	data.password = $("#password").val(),
+	$.ajax({
+		type:"post",
+		url:"existName",
+		data:JSON.stringify(data),
+		contentType: "application/json;charset=utf-8",
+		success:function (data){
+			if(data.msg == 1){
+				alert("已存在的用户名！");
+			}else{
+				submitForm();
+			}
+		}
+		
+	});
+}
+//异步提交表单
+function submitForm(){
+	
+	var data = {};
+	if('[[${flag}]]' == 'update')
+		data.id = '[[${id}]]'
+	data.flag = '[[${flag}]]',
+	data.userName=  $("#userName").val(),
+	data.password = $("#password").val(),
+	$.ajax({
+		type:"post",
+		url:"save",
+		data:JSON.stringify(data),
+		contentType: "application/json;charset=utf-8",
+		success:function (msg){
+			if(msg.msg == "success"){
+				window.location.href="userList";
+			}
+		}
+		
+	});
+}
+</script>	
+</body>
+</html>
