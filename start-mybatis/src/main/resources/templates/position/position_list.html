@@ -8,6 +8,9 @@
 </style>
 <link rel="stylesheet" th:href="@{'/static/staticres/ol6.3/ol.css'}" type="text/css">
 <link rel="stylesheet" th:href="@{'/static/staticres/ol3source/ol.css'}" type="text/css">
+<link th:href="@{/static/addbar.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/static/staticres/plugins/ol-ext/control/layerswitchercontrol.css}" rel="stylesheet" type="text/css">
+<link th:href="@{/static/staticres/plugins/ol3-measuretool-master/measuretool.css}" rel="stylesheet" type="text/css">
 <head>
 <meta charset="UTF-8">
 <title></title>
@@ -20,6 +23,8 @@
 <script th:src="@{'/static/staticres/js/jquery-2.2.3.min.js'}"></script>
 <script th:src="@{'/static/staticres/ol6.3/ol.js'}"></script>
 <script th:src="@{'/static/staticres/ol3source/ol.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/ol-ext/control/layerswitchercontrol.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/ol3-measuretool-master/measuretool.js'}"></script>
 <script type="text/javascript">
 //获取经纬度的值
 var longitude = $('#longitude').val();
@@ -67,6 +72,19 @@ var map = new ol.Map({
     view: view,
     interactions: interactions,
 });
+//添加层切换按钮
+var switcher = new ol.control.LayerSwitcher({
+	target:$(".layerSwitcher").get(0), 
+	show_progress:false,
+	extent: false,
+	trash: false
+});
+map.addControl(switcher);
+//添加测试距离工具
+var MeasureTool = new ol.control.MeasureTool({
+	        sphereradius : 6378137,//sphereradius
+	      });
+map.addControl(MeasureTool);
 //添加移动鼠标显示地图经纬度功能
 map.addControl(new ol.control.MousePosition({coordinateFormat: ol.coordinate.createStringXY(8),projection: 'EPSG:4326'}));
 </script>
