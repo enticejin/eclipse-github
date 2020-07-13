@@ -62,7 +62,7 @@ public class RtleController {
 	@RequestMapping("/selectArea")
 	public String selectArea(Model model) {
 		List<String> areaNameList = new ArrayList<String>();
-		List<Area> areaList = areaService.getAreaLsit();
+		List<Area> areaList = areaService.findAll();
 		for(Area area : areaList) {
 			areaNameList.add(area.getAreaName());
 		}

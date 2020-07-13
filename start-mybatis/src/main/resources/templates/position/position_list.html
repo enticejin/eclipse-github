@@ -26,9 +26,16 @@
 <script th:src="@{'/static/staticres/plugins/ol-ext/control/layerswitchercontrol.js'}"></script>
 <script th:src="@{'/static/staticres/plugins/ol3-measuretool-master/measuretool.js'}"></script>
 <script type="text/javascript">
+/*
 //获取经纬度的值
 var longitude = $('#longitude').val();
 var latitude = $('#latitude').val();
+var extent = [parseFloat(longitude)-1,parseFloat(latitude)-1, parseFloat(longitude)+1,parseFloat(latitude)+1];
+var projection = new ol.proj.Projection({
+  code: 'xkcd-image',
+  units: 'pixels',
+  extent: extent
+});
 //自定义logo
 var mylogo = { src: "../static/staticres/images/adminphoto.jpg", href: "#" };
 // 定义地图的交互功能
@@ -40,7 +47,7 @@ var mylogo = { src: "../static/staticres/images/adminphoto.jpg", href: "#" };
 	//设置中心坐标位置为贵阳
      center: ol.proj.transform(
          [parseFloat(longitude),parseFloat(latitude)], 'EPSG:4326', 'EPSG:3857'),
-         //缩放比例
+     //缩放比例
      zoom: 10
  });
  //层级
@@ -60,17 +67,27 @@ var mylogo = { src: "../static/staticres/images/adminphoto.jpg", href: "#" };
      new ol.control.ZoomSlider(),
      new ol.control.ZoomToExtent(),
  ]);
+ //加载静态图
+ var image = new ol.layer.Image({
+     source: new ol.source.ImageStatic({
+         url: "../static/staticres/planmap/81c18fd6d65444d6aa8f4bd5aff859f2.png",
+         projection: projection,
+         imageExtent: extent
+       })
+     });
 //加载地图
 var map = new ol.Map({
     controls:controls,
     //加载层级
     layers: [
-       layer
+       layer,
+       image,
     ],
     logo: mylogo,
     target: 'map',
     view: view,
     interactions: interactions,
+    image:image,
 });
 //添加层切换按钮
 var switcher = new ol.control.LayerSwitcher({
@@ -86,7 +103,193 @@ var MeasureTool = new ol.control.MeasureTool({
 	      });
 map.addControl(MeasureTool);
 //添加移动鼠标显示地图经纬度功能
-map.addControl(new ol.control.MousePosition({coordinateFormat: ol.coordinate.createStringXY(8),projection: 'EPSG:4326'}));
+var mouseControl = new ol.control.MousePosition({
+	coordinateFormat: ol.coordinate.createStringXY(8),
+	projection: 'EPSG:4326'});
+map.addControl(mouseControl);
+//添加楼层按钮
+*/
+
+//添加层切换按钮
+var switcher = new ol.control.LayerSwitcher({
+	target:$(".layerSwitcher").get(0), 
+	show_progress:false,
+	extent: false,
+	trash: false
+});
+
+//添加测试距离工具
+var MeasureTool = new ol.control.MeasureTool({
+	        sphereradius : 6378137,//sphereradius
+	      });
+
+//添加移动鼠标显示地图经纬度功能
+var mouseControl = new ol.control.MousePosition({
+	coordinateFormat: ol.coordinate.createStringXY(8),
+	projection: 'EPSG:4326'});
+
+var mylogo = { src: "../static/staticres/images/adminphoto.jpg", href: "#" };
+//获取经纬度的值
+var longitude = $('#longitude').val();
+var latitude = $('#latitude').val();
+//初始化地图
+function Map() {
+    this.map = new ol.Map({
+        target: 'map',
+        view: new ol.View({
+            center: [0, 0],
+            zoom: 15
+        }),
+    	logo:mylogo,
+    });
+    this.map.addControl(MeasureTool);
+    this.map.addControl(switcher);
+    this.map.addControl(mouseControl);
+    this.map.addControl(new ol.control.FullScreen());
+    this.map.addControl(new ol.control.ScaleLine());
+    this.map.addControl(new ol.control.ZoomSlider());
+    this.map.addControl(new ol.control.ZoomToExtent());
+    this.tileLayer;
+    this.vectorLayer;
+    this.vectorSource;
+    this.imageLayer;
+    this.imageSource;
+}
+Map.prototype = {
+    constructor: Map,
+    initialize: function () {
+        this.initTileLayer();
+        this.initMousePositionControl();
+        this.initVectorLayer();
+        this.initImageLayer();
+    },
+    initTileLayer: function (options) {
+        this.tileLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                attributions: new ol.Attribution({
+                    html: "<a href='http://www.jlrtls.com/'>&copy; 旌霖科技</a>"
+                }),
+                //url: 'http://www.google.cn/maps/vt?lyrs=y@802&gl=cn&x={x}&y={y}&z={z}'
+               	url:"http://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
+            })
+        });
+        this.map.addLayer(this.tileLayer);
+        var center = ol.proj.fromLonLat([parseFloat(longitude), parseFloat(latitude)]);
+        var view = this.map.getView();
+        view.setCenter(center);
+    },
+    initMousePositionControl: function () {
+        var mousePositionControl = new ol.control.MousePosition({
+            coordinateFormat: ol.coordinate.createStringXY(6),
+            projection: 'EPSG:4326',
+            className: 'custom-mouse-position',
+            target: document.getElementById('mouse-position'),
+            undefinedHTML: '&nbsp'
+        });
+        this.map.addControl(mousePositionControl);
+    },
+    initVectorLayer: function () {
+        this.vectorSource = new ol.source.Vector({
+            wrapX: false //不在地图上重复
+        });
+        this.vectorLayer = new ol.layer.Vector({
+            source: this.vectorSource,
+            style: new ol.style.Style({ //默认样式
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 204, 51, 0.5)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ffcc33',
+                    width: 0
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ffcc33'
+                    })
+                })
+            })
+        });
+        this.map.addLayer(this.vectorLayer);
+    },
+    initImageLayer: function (extent) {
+        this.imageLayer = new ol.layer.Image({
+            // source: this.imageSource
+        })
+        this.map.addLayer(this.imageLayer);
+    },
+    //添加基站
+    addIcon: function (lonlat, tip) {
+        var point = new ol.geom.Point(ol.proj.transform(lonlat, 'EPSG:4326', 'EPSG:3857'));
+        var pointFeature = new ol.Feature(point);
+        pointFeature.setStyle(
+            new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 0.5],
+                    crossOrigin: 'anonymous',
+                    src: '../static/staticres/dist/img/anchor48px.png'
+                }),
+				text: new ol.style.Text({
+					text: tip,
+					scale: 1.3,
+					fill: new ol.style.Fill({
+					  color: '#000000'
+					}),
+					stroke: new ol.style.Stroke({
+					  color: '#FFFF99',
+					  width: 3.5
+					})
+				})
+            })
+        );
+        this.vectorSource.addFeature(pointFeature);
+    },
+    //添加时钟
+    addClockIcon: function (lonlat, tip) {
+        var point = new ol.geom.Point(ol.proj.transform(lonlat, 'EPSG:4326', 'EPSG:3857'));
+        var pointFeature = new ol.Feature(point);
+        pointFeature.setStyle(
+            new ol.style.Style({
+                image: new ol.style.Icon({
+                    anchor: [0.5, 0.5],
+                    crossOrigin: 'anonymous',
+                    src: '../static/staticres/dist/img/clocksource48px.png'
+                }),
+				text: new ol.style.Text({
+					text: tip,
+					scale: 1.3,
+					fill: new ol.style.Fill({
+					  color: '#000000'
+					}),
+					stroke: new ol.style.Stroke({
+					  color: '#FFFF99',
+					  width: 3.5
+					})
+				})
+            })
+        );
+        this.vectorSource.addFeature(pointFeature);
+    },
+    //添加图片
+    addImage: function (extent, url) {
+        var imageExtent = extent;
+        this.imageSource = new ol.source.ImageStatic({
+            url: url,
+            projection: 'EPSG:3857',
+            imageExtent: ol.proj.transformExtent(imageExtent, 'EPSG:4326', 'EPSG:3857')
+        })
+        this.imageLayer.setSource(this.imageSource);
+    }
+}
+
+var map = new Map();
+map.initialize();
+
+//加载图片
+function addImage(extent, url) {
+    map.addImage(extent, url);
+}
+addImage([parseFloat(longitude)-0.01, parseFloat(latitude)-0.01, parseFloat(longitude)+0.01, parseFloat(latitude)+0.01], "../static/staticres/planmap/81c18fd6d65444d6aa8f4bd5aff859f2.png");
 </script>
 </body>
 </html>
