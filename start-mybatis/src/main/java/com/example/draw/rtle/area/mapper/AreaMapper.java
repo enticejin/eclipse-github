@@ -1,29 +1,22 @@
 package com.example.draw.rtle.area.mapper;
-import java.util.List;
-import java.util.Map;
 
-import org.apache.ibatis.annotations.Mapper;
+import java.io.Serializable;
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.example.draw.rtle.area.model.Area;
-@Mapper
-public interface AreaMapper {
-    int deleteByPrimaryKey(Integer id);
+@Repository
+public interface AreaMapper extends JpaRepository<Area, Integer>, Serializable {
 
-    int insert(Area record);
+	Page<Area> findAll(Specification<Area> specification, Pageable pageable);
 
-    int insertSelective(Area record);
-
-    Area selectByPrimaryKey(Integer id);
-
-    int updateByPrimaryKeySelective(Area record);
-
-    int updateByPrimaryKey(Area record);
-
-	List<Area> getAreaLsit();
-
-	List<Area> areaList(Map<String, Object> map);
-
-	int count(Map<String, Object> map);
-
-	List<Area> getAreaByName(String areaName);
+	Long count(Specification<Area> specification);
+	
+	List<Area> findByAreaName(String areaName);
+	
 }

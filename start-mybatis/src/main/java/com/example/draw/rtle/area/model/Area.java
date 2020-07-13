@@ -1,61 +1,59 @@
 package com.example.draw.rtle.area.model;
 
-import com.example.draw.rtle.clocksource.model.Clock;
-import com.example.draw.rtle.model.Anchor;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
-/** 
-* @version 创建时间：2020年6月16日 上午9:05:40
-*/
+
+@Entity
+@Table(name="area",indexes = {@Index(name="id", columnList = "id" , unique = true),
+		@Index(name="area_name", columnList = "area_name", unique = true)})
 public class Area {
+	@Id//主键ID
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+	@Column(name = "area_name" ,nullable = false)
     private String areaName;
-
+	@Column(name="remarks", nullable = false)
     private String remarks;
-
+	@Column(name="area_wide", nullable = false)
     private String areaWide;
-
+	@Column(name="clock_name", nullable = false)
     private String clockName;
-
+	@Column(name="action_type", nullable = false)
     private String actionType;
-
+	@Column(name="z", nullable = false)
     private String z;
-
+	@Column(name="average_filtering", nullable = false)
     private String averageFiltering;
-
+	@Column(name="kalman", nullable = false)
     private String kalman;
-
+	@Column(name="anchor_id", nullable = false)
     private String anchorId;
-
+	@Column(name="use_average_filter", nullable = false)
     private String useAverageFilter;
-
+	@Column(name="use_boundary_value", nullable = false)
     private String useBoundaryValue;
-
-	private String useKalmanFilter;
-
+	@Column(name="use_kalman_filter", nullable = false)
+    private String useKalmanFilter;
+	@Column(name="action", nullable = false)
     private String action;
-    
-    private Anchor anchor;
-    
-    private Clock clock;
+	@Column(name = "flag")
+	private Integer flag=0;
+	
+    public Integer getFlag() {
+		return flag;
+	}
 
-    public Anchor getAnchor() {
-  		return anchor;
-  	}
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
 
-  	public void setAnchor(Anchor anchor) {
-  		this.anchor = anchor;
-  	}
-
-  	public Clock getClock() {
-  		return clock;
-  	}
-
-  	public void setClock(Clock clock) {
-  		this.clock = clock;
-  	}
-    
-    public Integer getId() {
+	public Integer getId() {
         return id;
     }
 
@@ -87,17 +85,15 @@ public class Area {
         this.areaWide = areaWide == null ? null : areaWide.trim();
     }
 
-    
-
     public String getClockName() {
-		return clockName;
-	}
+        return clockName;
+    }
 
-	public void setClockName(String clockName) {
-		this.clockName = clockName;
-	}
+    public void setClockName(String clockName) {
+        this.clockName = clockName == null ? null : clockName.trim();
+    }
 
-	public String getActionType() {
+    public String getActionType() {
         return actionType;
     }
 
@@ -130,14 +126,14 @@ public class Area {
     }
 
     public String getAnchorId() {
-		return anchorId;
-	}
+        return anchorId;
+    }
 
-	public void setAnchorId(String anchorId) {
-		this.anchorId = anchorId;
-	}
+    public void setAnchorId(String anchorId) {
+        this.anchorId = anchorId == null ? null : anchorId.trim();
+    }
 
-	public String getUseAverageFilter() {
+    public String getUseAverageFilter() {
         return useAverageFilter;
     }
 

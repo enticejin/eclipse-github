@@ -1,15 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common/common_header :: common_header(~{::title},~{::link},~{})">
+<head>
 <meta charset="UTF-8">
 <link rel="stylesheet" th:href="@{'/static/staticres/test/jquery-ui.css'}" />
 <link rel="stylesheet" th:href="@{'/static/staticres/test/test.css'}" />
+<link rel="stylesheet" th:href="@{'/static/staticres/layui/css/layui.css'}"  media="all">
+<!-- Bootstrap 3.3.6 -->
+<link rel="stylesheet" th:href="@{'/static/staticres/bootstrap/css/bootstrap.css'}">
 <title></title>
+<meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 </head>
 <body>
-
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+  <legend>区域表格</legend>
+</fieldset>
+		<div>
+	<form action="areaList" method="post" name="Form" id="Form">
+			<div class="layui-inline">
+				<table>
+					<tr>
+						<td><input class="layui-input"  id="nav-search-input" type="text" name="NAME" value="" placeholder="区域名称" /></td>
+						<td> <button type="button" onclick="query();" class="layui-btn layui-btn-radius">搜索</button></td>
+					</tr>
+				</table>
+			</div>
+			</form>
+		</div>
+			<!--		
 <div class="container-fluid" style="padding:10px 23px 10px 23px;">
-		<!-- 检索  -->
+		
 		<form action="areaList" method="post" name="Form" id="Form">
 			<div class="row table-query">
 				<table>
@@ -54,7 +75,7 @@
 											
 									<td style="width: 180px;text-align: center;">
 										<button type="button" class="btn bg-purple btn-xs btn-flat" th:onclick="'javascript:gotoAreaEditOnMap('+${area.id}+')'">编辑形状</button>
-										<!-- 复制区域配置信息 -->
+									
 										 <button type="button" class="btn bg-purple btn-xs btn-flat" th:onclick="'javascript:copy('+${area.id}+')'">复制区域</button>
 										<a title="修改"  class="btn btn-social-icon  btn-primary btn-xs btn-flat" th:onclick="'javascript:edit('+${area.id}+')'"><i class="fa fa-edit"></i></a>
 										
@@ -65,7 +86,7 @@
 				</table>
 				<a class="btn btn-small btn-success btn-sm btn-flat" onclick="add();">新增</a>
 		</div>
-		<form id="pageForm" >
+		 <form id="pageForm" >
 		<input type="hidden" id="pages" name="pages">
 		<div>
 			<nav align="right" aria-label="Page navigation">
@@ -88,17 +109,78 @@
 		</div>
 	</form>
 	</div>
-
-<div>
-	<input type="hidden" th:value="${rtle.logitude}" th:name="longitude" th:id="longitude" maxlength="32">
-	<input type="hidden" th:value="${rtle.latitude}" th:name="latitude" th:id="latitude" maxlength="32">
-</div>
-
+	<div>
+		<input type="hidden" th:value="${rtle.logitude}" th:name="longitude" th:id="longitude" maxlength="32">
+		<input type="hidden" th:value="${rtle.latitude}" th:name="latitude" th:id="latitude" maxlength="32">
+	</div>
+			-->
+	<div>
+		<input type="hidden" th:value="${rtle.logitude}" th:name="longitude" th:id="longitude" maxlength="32">
+		<input type="hidden" th:value="${rtle.latitude}" th:name="latitude" th:id="latitude" maxlength="32">
+	</div>		
+	<table id="dates" lay-filter="test"></table>
+<button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加区域</button>
 <script th:src="@{'/static/staticres/test/jquery.js'}"></script>
+<script th:src="@{'/static/staticres/layui/layui.js'}"></script>
 <!--引入弹窗组件start-->
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
+<script th:src="@{'/static/staticres/bootstrap/js/bootstrap.js'}"></script>
 <script type="text/javascript">
+layui.use('table', function(){
+    var table = layui.table;
+    	table.render({
+            elem: '#dates'
+            ,url:'/area/selectAreaTable'
+            ,limit:5 //默认为10
+            ,cols: [
+            	
+            	[
+                {field:'areaName', width:170, title: '区域名称', sort: true} //sort：true页面可进行排序操作
+                ,{field:'areaWide', width:400, title: '区域维度'}
+                ,{field:'clockName',width:170,  title: '时钟源'}
+                ,{field:'action',width:170,  title: '是否激活'}
+                ,{field:'remarks',width:170,  title: '备注'}
+                ,{field:'level',width:500, height:50, title: '操作',templet: function(d){
+                    //return'<a id="delete" class="layui-btn layui-btn-xs layui-btn-danger" onclick="deleteFile('+d.id+');">删除</a> ';
+                    return '<button type="button" onclick="gotoAreaEditOnMap('+d.id+');" class="layui-btn layui-btn-normal">配置地图</button><button type="button" class="layui-btn layui-btn-normal layui-btn-sm"><i class="layui-icon" onclick="copy('+d.id+');"></i></button><div class="layui-btn-group"><button type="button" class="layui-btn layui-btn-sm"><i class="layui-icon" onclick="edit('+d.id+');"></i></button><button type="button" class="layui-btn layui-btn-sm"><i class="layui-icon" onclick="del('+d.id+');"></i></button></div>'
+                   }
+                }
+            	]
+            	
+            		]
+            ,page: true
+            ,limits:[5,10,15,20]
+            ,done:function(res, curr, count){
+                //数据的回调用，可不写
+                //区域纬度
+            	$("[data-field='areaWide']").each(function(){
+            	   　　if($(this).text()=='1'){
+            	      　　$(this).text("一维")
+            	      　　$(this).width("56px")
+            	      }else if($(this).text()=='2'){
+            	         $(this).text("二维")
+            	      }else if($(this).text()=='3')
+            	    	  $(this).text("三维") 
+            	    	else{
+            	    		 $(this).text("区域维度")
+            	    	}
+            	   });
+                //是否激活
+            	$("[data-field='action']").each(function(){
+           	   　　if($(this).text()=='true'){
+           	      　　$(this).text("是")
+           	      　　$(this).width("56px")
+           	      }else if($(this).text()=='false'){
+           	         $(this).text("否")
+           	      }
+           	    	else{
+           	    		 $(this).text("是否激活")
+           	    	}
+           	   });
+            }
+        });        
+    });
 //查询
 function query(){
 	var areaName = $("#nav-search-input").val();
@@ -161,7 +243,7 @@ function copy(id){
 function gotoAreaEditOnMap(id){
 	window.parent.addEditMap('area/mapLngLat?longitude='+$("#longitude").val()+'&latitude='+$("#latitude").val()+'&id='+id);
 }	
-
+/*
 //跳转页面
 function jumpPage(pages) {
 			var url = '[[${url}]]';
@@ -192,7 +274,7 @@ function jumpEnd(){
 	var sumPage = [[${sumPage}]]	
 	jumpPage(sumPage)
 }
-
+*/
 //添加区域配置
 function add(){
 	addDiag = new Dialog();
