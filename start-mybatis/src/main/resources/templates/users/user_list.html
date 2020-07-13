@@ -76,16 +76,16 @@ function updateUser(id){
 }
 //删除用户
 function deleteUser(id){
-	$.ajax({
-		type:"GET",
-		url:"deleteUser?id="+id,
-		type:"json",
-		success: function(data){
-			if(data.msg == 'success'){
-				window.top.userConfig();
+		$.ajax({
+			type:"GET",
+			url:"deleteUser?id="+id,
+			type:"json",
+			success: function(data){
+				if(data.msg == 'success'){
+					window.top.userConfig();
+				}
 			}
-		}
-	});
+		});
 }
 </script>
 </body>
