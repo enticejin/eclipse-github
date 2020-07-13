@@ -72,6 +72,23 @@ function getAreaStrs(){
 	}
 	return str;
 }
+//将选择的基站返回至区域调试列表中
+function getAnchorStrs(){
+	var str = '';
+	//遍历debug_areas
+	for(var i =0;i < document.getElementsByName('ids').length;i++){
+		
+		if(document.getElementsByName('ids')[i].checked){
+			if(str == ''){
+				str += document.getElementsByName('ids')[i].value;
+			}
+			else{
+				str += ',' + document.getElementsByName('ids')[i].value;
+			}
+		}
+	}
+	return str;
+}
 //获取Anchorid
 function getAnchorIds(){
 	var str = '';
