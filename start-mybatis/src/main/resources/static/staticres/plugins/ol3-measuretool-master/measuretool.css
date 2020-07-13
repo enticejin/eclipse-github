@@ -38,7 +38,7 @@
     color: red;
 }
 .ol-popup-closer:after {
-    content: "✖";
+    content: "×";
 }
 /*MeasureTool*/
 
