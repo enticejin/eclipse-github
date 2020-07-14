@@ -58,6 +58,7 @@ public class AreaController {
 				}
 			}else {
 				areaList.add(areaService.getOne(Integer.parseInt(ids)));
+				map.put("ids", ids);
 			}
 			map.put("flag", "area");
 			model.addAttribute("areaList", areaList);
