@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" th:href="@{'/static/staticres/layui/css/layui.css'}"  media="all">
+<link rel="stylesheet" th:href="@{'/static/staticres/test/test.css'}" />
+<title></title>
+</head>
+<body>
+<body class="hold-transition skin-blue sidebar-mini">
+			<div class="row" >
+				<table id="table_report" class="table table-striped table-condensed table-bordered table-hover" style="margin:5px 0px 0px 2px;">
+					<thead>
+						<tr>
+							<th style="width: 20px;"><!-- <input type="checkbox" id="zcheckbox" /> --></th>
+							<th style="width: 50px;">序号</th>
+							<th >文件名称</th>
+						</tr>
+					</thead>
+					<tbody  th:if="${varList} != null">
+								<tr th:each="var : ${varList}">
+									<td><input type='checkbox' th:id="${var.id}" name='ids' th:value="${var.filName}" /></td>
+									<td th:text="${var.id}"></td>
+											<td th:text="${var.filName}"></td>	
+								</tr>
+					</tbody>
+				</table>
+			</div>
+
+<script th:src="@{'/static/staticres/test/jquery.js'}"></script>
+<script th:src="@{'/static/staticres/layui/layui.js'}"></script>
+<!--引入弹窗组件start-->
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
+<script type="text/javascript">
+	//查出选中的图片
+	function getSelectFileName()
+	{
+		var str='';
+		for(var i=0;i < document.getElementsByName('ids').length;i++)
+		{
+			  if(document.getElementsByName('ids')[i].checked){
+			  	if(str=='') 
+			  		str += document.getElementsByName('ids')[i].value;
+			  	else 
+			  		str += ',' + document.getElementsByName('ids')[i].value;
+			  }
+		}
+		return str;
+	}
+</script>
+</body>
+</html>
