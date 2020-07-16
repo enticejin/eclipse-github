@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common_header :: common_header(~{::title},~{::link},~{})">
+<meta charset="UTF-8">
+<link rel="stylesheet" th:href="@{'/static/staticres/test/test.css'}" />
+<title></title>
+</head>
+<body style="overflow-x: hidden; overflow-y: hidden;">
+	<div th:if="${flag == 'add'}">
+		<form action="savePlanMap" name="userForm" id="userForm" method="post">
+		<input type="hidden" id="basemapId" name="basemapId" value="">
+		<div id="zhongxin">
+			<table border="1" id="table_report" class="table table-striped table-bordered table-hover">
+				<tr>
+					<td style="width: 100px; text-align: right;">平面图名称:</td>
+					<td><input type="text" class="form-control input-sm" name="planmapname" id="planmapname" value="" placeholder="这里输入平面图的名称" title="平面图名称"></td>
+					<td style="width: 100px; text-align: right;">平面图类型:</td>
+					<td><select id="pictype" name="pictype" class="form-control select2" style="height:30px;padding: 3px 12px;">
+							<option value=0 >位图</option>
+							<option value=1 >矢量图</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;">透明度:</td>
+					<td><input type="text" class="form-control input-sm" name="opacity" id="opacity" value="" placeholder="这里设置透明度" title=""></td>
+					<td style="width: 100px; text-align: right;">旋转角度:</td>
+					<td><input type="text" class="form-control input-sm"
+						name="rotate" id="rotate" value=""
+						placeholder="设置旋转角度" title="">
+					</td>
+				</tr>
+				
+				<tr>
+					<td style="width: 100px; text-align: right;">中心经度:</td>
+					<td><input type="text" class="form-control input-sm" name="centerlon" id="centerlon" value="106.6280289" placeholder="这里设置经度" title=""></td>
+					<td style="width: 100px; text-align: right;">中心维度:</td>
+					<td><input type="text" class="form-control input-sm"
+						name="centerlat" id="centerlat" value="26.6220112"
+						placeholder="这里设置纬度" title="">
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;">X缩放:</td>
+					<td><input type="text" class="form-control input-sm" name="scalex" id="scalex" value="" placeholder="X的缩放值" title=""></td>
+					<td style="width: 100px; text-align: right;">Y缩放:</td>
+					<td><input type="text" class="form-control input-sm"
+						name="scaley" id="scaley" value=""
+						placeholder="Y的缩放值" title="">
+					</td>
+				</tr>
+				
+				<tr>
+					<td style="width: 100px; text-align: right;">平面图文件:</td>
+					<td colspan="3">
+						<div style="width:100%">
+							<div style="float: left;width: 447px">
+								<input type="text" class="form-control input-sm" name="palnmapfilename" id="palnmapfilename" value="" placeholder="这里选择平面图对应的文件" title="">
+							</div>
+							<div style="float:right;width:50px;margin-right:50px;">
+								<input type="button" onclick="selectFile()" value="点击选择文件" />
+							</div>
+						</div>
+					</td>
+					
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;">备注:</td>
+					<td colspan="3"><textarea  class="form-control input-sm"
+						name="beizhu" id="beizhu" rows="3"
+						placeholder="这里输入备注" title="备注"></textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="zhongxin2" class="center" style="display: none">
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<img th:src="@{'/static/staticres/images/jiazai.gif'}" /><br />
+			<h4 class="lighter block green">提交中...</h4>
+		</div>
+	</form>
+	</div>
+	<div th:if="${flag == 'update'}">
+		<form action="savePlanMap" name="userForm" id="userForm" method="post">
+		<input type="hidden" id="basemapId" name="basemapId" value="">
+		<div id="zhongxin">
+			<table border="1" id="table_report" class="table table-striped table-bordered table-hover">
+				<tr>
+					<td style="width: 100px; text-align: right;">平面图名称:</td>
+					<td><input type="text" class="form-control input-sm" name="planmapname" id="planmapname" value="" th:value="${map.planMapName}" title="平面图名称"></td>
+					<td style="width: 100px; text-align: right;">平面图类型:</td>
+					<td><select id="pictype" name="pictype" class="form-control select2" style="height:30px;padding: 3px 12px;">
+							<option th:selected="${map.imageType} == 0" value="0">位图</option>
+							<option th:selected="${map.imageType}== 1" value="1">矢量图</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;">透明度:</td>
+					<td><input type="text" class="form-control input-sm" name="opacity" id="opacity" th:value="${map.transparency}"></td>
+					<td style="width: 100px; text-align: right;">旋转角度:</td>
+					<td><input type="text" class="form-control input-sm"
+						name="rotate" id="rotate" th:value="${map.rotationAngle}"
+						>
+					</td>
+				</tr>
+				
+				<tr>
+					<td style="width: 100px; text-align: right;">中心经度:</td>
+					<td><input type="text" class="form-control input-sm" name="centerlon" id="centerlon" th:value="${map.longitude}"></td>
+					<td style="width: 100px; text-align: right;">中心维度:</td>
+					<td><input type="text" class="form-control input-sm"
+						name="centerlat" id="centerlat" th:value="${map.latitude}"
+						>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;">X缩放:</td>
+					<td><input type="text" class="form-control input-sm" name="scalex" id="scalex" th:value="${map.zoomX}"></td>
+					<td style="width: 100px; text-align: right;">Y缩放:</td>
+					<td><input type="text" class="form-control input-sm"
+						name="scaley" id="scaley" th:value="${map.zoomY}"
+						>
+					</td>
+				</tr>
+				
+				<tr>
+					<td style="width: 100px; text-align: right;">平面图文件:</td>
+					<td colspan="3">
+						<div style="width:100%">
+							<div style="float: left;width: 447px">
+								<input type="text" class="form-control input-sm" name="palnmapfilename" id="palnmapfilename" th:value="${map.fileName}" placeholder="这里选择平面图对应的文件" title="">
+							</div>
+							<div style="float:right;width:50px;margin-right:50px;">
+								<input type="button" onclick="selectFile()" value="点击选择文件" />
+							</div>
+						</div>
+					</td>
+					
+				</tr>
+				<tr>
+					<td style="width: 100px; text-align: right;">备注:</td>
+					<td colspan="3"><textarea  class="form-control input-sm"
+						name="beizhu" id="beizhu" rows="3" th:value="${map.remarks}"
+						placeholder="这里输入备注" title="备注"></textarea>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div id="zhongxin2" class="center" style="display: none">
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<img th:src="@{'/static/staticres/images/jiazai.gif'}" /><br />
+			<h4 class="lighter block green">提交中...</h4>
+		</div>
+		<input type="hidden" id="planMapId" th:value="${map.id}">
+	</form>
+	</div>
+
+<script th:src="@{'/static/staticres/test/jquery.js'}"></script>
+<!--引入弹窗组件start-->
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDrag.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
+<script type="text/javascript">
+//验证数据项
+function validate(){
+	var planmapname = $("#planmapname").val();//平面图名称
+	if(planmapname=="") return "平面图名称不能为空";
+	var opacity=$("#opacity").val();   //透明度
+	if(isNull(opacity)) return "透明度不能为空";
+	if(isNaN(opacity)){
+		return "透明度必须是数字";
+	}
+	//if(isNumber(opacity)) return "透明度必须是数字"  //
+	var rotate=$("#rotate").val();   //旋转角度
+	if(isNull(rotate)) return "旋转角度不能为空";
+	if(isNaN(rotate)){
+		return "旋转角度必须是数字";
+	}
+	//if(isNumber(rotate)) return "旋转角度必须是数字"  //
+	var centerlon=$("#centerlon").val();//经度
+	if(isNull(centerlon)) return "经度不能为空";
+	if(isNaN(centerlon)){
+		return "经度必须是数字";
+	}
+	//if(isNumber(centerlon)) return "经度必须是数字"  //
+	var centerlat=$("#centerlat").val();//经度
+	if(isNull(centerlat)) return "纬度不能为空";
+	if(isNaN(centerlat)){
+		return "纬度必须是数字";
+	}
+	//if(isNumber(centerlat)) return "纬度必须是数字"  //
+	var scalex=$("#scalex").val();   //缩放x的比例
+	if(isNull(scalex)) return "x缩放比例不能为空";
+	if(isNaN(scalex)){
+		return "x缩放比例必须是数字";
+	}
+	//if(isNumber(scalex)) return "x缩放比例必须是数字"  //
+	var scaley=$("#scaley").val();   //缩放y的比例
+	if(isNull(scaley)) return "y缩放比例不能为空";
+	if(isNaN(scaley)){
+		return "y缩放比例必须是数字";
+	}
+	//if(isNumber(scaley)) return "y缩放比例必须是数字"  //
+	var palnmapfilename=$("#palnmapfilename").val();//底图的文件名
+	if(palnmapfilename == "") return "平面图文件不能为空";
+	var beizhu=$("#beizhu").val();  //备注
+    return "OK";
+}
+ //判断是否是数字
+function isNumber(val){
+    var regPos = /^\d+(\.\d+)?$/; //非负浮点数
+    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+    if(regPos.test(val) && regNeg.test(val)){
+        return true;
+    }else{
+        return false;
+    }
+}
+ 
+ //判断是否为空
+ function isNull(value){
+	 if(value == "" || value == null){
+		 return true;
+	 }else{
+		return false; 
+	 }
+ }
+ //打开选择平面图的文件
+ function selectFile()
+ {
+	 var diag = new Dialog();
+	 diag.Width = 500;
+	 diag.Height = 280;
+	 diag.Title ="选择文件";
+	 diag.URL = "selectFileList";
+	 diag.OKEvent = function(){
+				//diag.innerFrame.contentWindow.save();
+		 		var fileName=diag.innerFrame.contentWindow.getSelectFileName();
+		 		console.info("t:"+fileName);
+		 		if(fileName=='')
+		 			{
+						Dialog.alert("提示：你没有选择任何内容,若想取消选择，请点击【取消】按钮");
+		 			}else
+		 				{
+		 				$("#palnmapfilename").val(fileName);
+		 				diag.close();
+		 			}
+			};
+	 diag.CancelEvent = function(){ //关闭事件
+				diag.close();
+			 };
+	 diag.show();  
+ }
+ //保存
+function save(){
+	var flag = validate();
+	if(flag == 'OK'){
+		//提交表单
+		submitForm();
+	}else{
+		Dialog.alert(flag)
+	}
+}
+var id;
+if('[[${flag}]]' === 'update')
+	id= $('#planMapId').val();
+function submitForm(){
+	var targetUrl = $("#userForm").attr("action");    
+	var data = {};
+	data.id=id;
+	data.planmapname=$('#planmapname').val();
+	data.pictype=$('#pictype').val();
+	data.opacity=$('#opacity').val();
+	data.rotate=$('#rotate').val();
+	data.centerlon=$('#centerlon').val();
+	data.centerlat=$('#centerlat').val();
+	data.scalex=$('#scalex').val();
+	data.scaley=$('#scaley').val();
+	data.palnmapfilename=$('#palnmapfilename').val();
+	data.beizhu=$('#beizhu').val();
+	data.id;
+	data.flag ='[[${flag}]]';
+	$.ajax({
+		type:'POST',  
+	    url:'savePlanMap', 
+	    data:JSON.stringify(data),  //重点必须为一个变量如：data
+	    contentType: "application/json;charset=utf-8", 
+	    success:function(data){
+	    	if(data.msg=='success'){
+		    	parent.location.href="mapList";
+	    	}else{
+	    		Dialog.alert("保存失败!")
+	    	}
+	    },
+	    error:function(){ 
+	    	Dialog.alert("请求失败!")
+	    	
+	    }
+	   })
+}
+</script>
+</body>
+</html>
