@@ -484,7 +484,7 @@ function getDebugAnchorName(){
 	var div_s = myDiv.getElementsByTagName("div");
 	var anchorName = '';
 	for(var i=0;i<div_s.length;i++){
-		anchorName += div_s.item(i).innerHTML.substring(129,div_s.item(i).innerHTML.length)+",";
+		anchorName += div_s.item(i).getElementsByTagName("span")[1].innerHTML+",";
 	}
 	return anchorName;
 }
