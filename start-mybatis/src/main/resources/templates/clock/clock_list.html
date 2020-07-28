@@ -135,10 +135,6 @@
 	//反选
 	function checkedF(){
 		var $ids = $(":checkbox[name='ids']");
-		/*for(var i = 0; i <$ids.length; i++){
-			var $ck = $ids.eq(i);
-			$ck.prop("checked",!$ck.prop("checked"))
-		}*/
 		$ids.each(function (n) {
 			var $ck = $ids.eq(n);
 			$ck.prop("checked",!$ck.prop("checked"))
@@ -151,10 +147,36 @@
 	}
 	//批量删除
 	function deleteAll(){
-		var $ids = $(":checkbox[name='ids']");
-		$ids.each(function(n){
-			
-		})
+		var $ids = show();
+		if($ids.length > 0){
+			Dialog.confirm("确认删除吗？",function(){
+				$.ajax({
+					type:"GET",
+					url:"deleteAll?ids="+$ids,
+					contentType: "application/json;charset=utf-8",
+					success: function(data){
+						if(data.msg == "success"){
+							window.top.clockConfig();
+						}else{
+							Dialog.confirm("删除失败");
+						}
+					}
+				});
+			});
+		}else{
+			Dialog.confirm("你未选中任何时钟！");
+		}
+	}
+	//显示复选框选中
+	function show(){
+		obj = document.getElementsByName("ids");
+		check_val = [];
+		for(o in obj){
+			if(obj[o].checked){
+				check_val.push(obj[o].value);
+			}
+		}
+		return check_val;
 	}
 	//添加新的时钟
 	function add(){

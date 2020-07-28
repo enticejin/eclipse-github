@@ -140,6 +140,23 @@ public class ClockController {
 		return map;
 		
 	}
+	//批量删除时钟
+	@RequestMapping("deleteAll")
+	@ResponseBody
+	public Object deleteAll( String ids) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		if(ids.contains(",")) {
+			String[] idArray = ids.split(",");
+			for(String id : idArray) {
+				clockService.deleteByPrimaryKey(Integer.parseInt(id));
+			}
+		}else if(ids.length() > 0){
+			clockService.deleteByPrimaryKey(Integer.parseInt(ids));
+		}
+		map.put("msg", "success");
+		return map;
+		
+	}
 	//查找时钟
 	@RequestMapping("/select")
 	@ResponseBody
