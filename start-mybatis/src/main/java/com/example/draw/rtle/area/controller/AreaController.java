@@ -43,28 +43,11 @@ public class AreaController {
 	@RequestMapping("/areaList")
 	public String areaList(Model model,String ids,
 			Map<String,Object> map) {
+		
 		Rtle rtle = rtleService.selectByPrimaryKey(1);
 		map.put("rtle", rtle);
-		if(ids == null || ids == "") {
-			map.put("flag", "area");
-			model.addAttribute("areaList", areaService.findAll());
-			return "area/area_list";
-		}else if(ids != null &&ids.trim().length() > 0) {
-			List<Area> areaList = new ArrayList<Area>();
-			if(ids.contains(",")) {
-				String[] idArray = ids.split(",");
-				for(String id : idArray) {
-					areaList.add(areaService.getOne(Integer.parseInt(id)));
-				}
-			}else {
-				areaList.add(areaService.getOne(Integer.parseInt(ids)));
-				map.put("ids", ids);
-			}
-			map.put("flag", "area");
-			model.addAttribute("areaList", areaList);
-			return "area/area_list";
-		} else
-			return "area/area_list";
+		map.put("flag", "area");
+		return "area/area_list";
 	}
 	//分页展示区域
 	@RequestMapping("/selectAreaTable")
@@ -178,20 +161,21 @@ public class AreaController {
 		}
 		//查找区域
 		@RequestMapping("/select")
+		public Object selectArea(String areaName,Model model) {
+			List<Area> areaList = areaService.findAllByName(areaName);
+			Rtle rtle = rtleService.selectByPrimaryKey(1);
+			model.addAttribute("rtle", rtle);
+			model.addAttribute("varList", areaList);
+			model.addAttribute("areaName", areaName);
+			model.addAttribute("flag","select");
+			return "area/area_list";
+		}
+		@RequestMapping("/selectAreas")
 		@ResponseBody
-		public Object selectArea(String areaName) {
-			List<Area> areaList = areaService.getAreaByName(areaName);
-			Map<String,Object> map = new HashMap<>();
-			if(areaList != null && areaList.size() > 0) {
-				List<Integer> ids = new ArrayList<Integer>();
-				for(Area area : areaList) {
-					ids.add(area.getId());
-				}
-				map.put("ids", ids);
-				map.put("msg", "success");
-			}else {
-				map.put("msg", "fail");
-			}
+		public Object selectTable(String areaName) {
+			Map<String,Object> map=new HashMap<String,Object>();
+			map.put("code", "0");
+			map.put("data", areaService.findAllByName(areaName));
 			return map;
 		}
 		//维度设置
