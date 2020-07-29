@@ -1,6 +1,7 @@
 package com.example.draw.rtle.planmap.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +17,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
-import com.example.draw.rtle.area.model.Area;
 import com.example.draw.rtle.planmap.model.PlanMap;
 import com.example.draw.rtle.planmap.service.PlanMapService;
+import com.example.draw.rtle.rtle.model.Rtle;
 import com.example.draw.rtle.rtle.service.RtleService;
-import com.example.draw.rtle.userFile.model.UserFile;
 import com.example.draw.rtle.userFile.service.UserFileService;
+import com.uwbhome.rtle.utils.Misc;
 
 /** 
 * @version 创建时间：2020年7月14日 上午10:27:03
@@ -158,6 +159,96 @@ public class PlanMapController {
 		Map<String,Object> map=new HashMap<String,Object>();
 		map.put("code", "0");
 		map.put("data", planMapService.findAllByName(name));
+		return map;
+	}
+	//编辑平面图
+	@RequestMapping("/EditOnMap")
+	public Object EditOnMap(int id,Model model) {
+		model.addAttribute("map", planMapService.getOne(id));
+		return "planmap/edit_on_map";
+	}
+	//坐标轴
+	/**
+	 * 坐标轴的数据
+	 * @return
+	 */
+	@RequestMapping(value = "/json_coordinate_axis.do")
+	@ResponseBody
+	public Object json_coordinate_axis() {
+		Map<String, Object> map = new HashMap<>();
+		map.put("type", "FeatureCollection");
+		Map<String, Object> crsMap = new HashMap<>();
+		crsMap.put("type", "name");
+		Map<String, Object> propertyMap = new HashMap<>();
+		propertyMap.put("name", "urn:ogc:def:crs:OGC:1.3:CRS84");
+		crsMap.put("properties", propertyMap);
+		map.put("crs", crsMap);
+		List<Object> featureList = new ArrayList<>();
+		// X 坐标轴
+		Map<String, Object> featureXMap = new HashMap<>();
+		featureXMap.put("type", "Feature");
+		featureXMap.put("id", "x_axis");
+		Map<String, Object> propertyXMap = new HashMap<>();
+		propertyXMap.put("id", "x_axis");
+		propertyXMap.put("name", "X 坐标轴");
+		featureXMap.put("properties", propertyXMap);
+		Map<String, Object> geometryXMap = new HashMap<>();
+		geometryXMap.put("type", "LineString");
+		List<Object> coordinateXList = new ArrayList<Object>();
+		List<Double> xxList = new ArrayList<>();
+		int id = 1;
+		Rtle rtle = rtleService.selectByPrimaryKey(id);
+		xxList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLogitude()) - 1, 8)));
+		xxList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLatitude()), 8)));
+		coordinateXList.add(xxList);
+		List<Double> xyList = new ArrayList<>();
+		xyList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLogitude()) + 1, 8)));
+		xyList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLatitude()), 8)));
+		coordinateXList.add(xyList);
+		geometryXMap.put("coordinates", coordinateXList);
+		featureXMap.put("geometry", geometryXMap);
+		featureList.add(featureXMap);
+
+		// Y 坐标轴
+		Map<String, Object> featureYMap = new HashMap<>();
+		featureYMap.put("type", "Feature");
+		featureYMap.put("id", "y_axis");
+		Map<String, Object> propertyYMap = new HashMap<>();
+		propertyYMap.put("id", "y_axis");
+		propertyYMap.put("name", "Y 坐标轴");
+		featureYMap.put("properties", propertyYMap);
+		Map<String, Object> geometryYMap = new HashMap<>();
+		geometryYMap.put("type", "LineString");
+		List<Object> coordinateYList = new ArrayList<Object>();
+		List<Double> yxList = new ArrayList<>();
+		yxList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLogitude()), 8)));
+		yxList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLatitude()) - 1, 8)));
+		coordinateYList.add(yxList);
+		List<Double> yyList = new ArrayList<>();
+		yyList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLogitude()), 8)));
+		yyList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLatitude()) + 1, 8)));
+		coordinateYList.add(yyList);
+		geometryYMap.put("coordinates", coordinateYList);
+		featureYMap.put("geometry", geometryYMap);
+		featureList.add(featureYMap);
+
+		// 原点
+		Map<String, Object> featureOMap = new HashMap<>();
+		featureOMap.put("type", "Feature");
+		featureOMap.put("id", "coordinate_origin");
+		Map<String, Object> propertyOMap = new HashMap<>();
+		propertyOMap.put("id", "coordinate_origin");
+		propertyOMap.put("name", "原点");
+		featureOMap.put("properties", propertyOMap);
+		Map<String, Object> geometryOMap = new HashMap<>();
+		geometryOMap.put("type", "Point");
+		List<Double> coordinateOList = new ArrayList<>();
+		coordinateOList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLogitude()), 8)));
+		coordinateOList.add(Double.valueOf(Misc.fixedWidthDoubletoString(Double.parseDouble(rtle.getLatitude()), 8)));
+		geometryOMap.put("coordinates", coordinateOList);
+		featureOMap.put("geometry", geometryOMap);
+		featureList.add(featureOMap);
+		map.put("features", featureList);
 		return map;
 	}
 }

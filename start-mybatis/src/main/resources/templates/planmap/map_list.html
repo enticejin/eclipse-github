@@ -21,7 +21,7 @@
 				<table>
 					<tr>
 						<td><input class="layui-input" id="nav-search-input"
-							type="text" name="NAME" value="" placeholder="区域名称" /></td>
+							type="text" name="NAME" value="" placeholder="平面图名称" /></td>
 						<td>
 							<button type="button" onclick="query();"
 								class="layui-btn layui-btn-radius">搜索</button>
@@ -200,6 +200,11 @@ function query(){
 	data.name = name;
 	window.location.href="select?name="+name;
 }
+//编辑平面图
+function gotoAreaEditOnMap(id){
+	window.location.href="EditOnMap?id="+id;
+}
+
 </script>
     <script type="text/html" id="sortNumber">
         {{d.LAY_TABLE_INDEX+1}}
