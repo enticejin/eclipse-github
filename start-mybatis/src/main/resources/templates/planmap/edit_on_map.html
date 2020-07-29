@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+	<link th:href="@{/static/staticres/Gis/v4.6.5/css/ol.css}" rel="stylesheet" type="text/css">
+    <script th:src="@{/static/staticres/Gis/v4.6.5/lib/ol.js}" type="text/javascript"></script>
+    <link th:href="@{/static/staticres/Gis/map.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/static/addbar.css}" rel="stylesheet" type="text/css">
+    <link th:href="@{/static/staticres/plugins/ol3-measuretool-master/measuretool.css}" rel="stylesheet" type="text/css">
+    
+	<link rel="stylesheet" th:href="@{'/static/staticres/ol6.3/ol.css'}" type="text/css">
+	<link rel="stylesheet" th:href="@{'/static/staticres/ol3source/ol.css'}" type="text/css">
+	<link rel="stylesheet" th:href="@{'/static/staticres/plugins/ol-ext/control/controlbar.css'}" type="text/css">
+	<link rel="stylesheet" th:href="@{'/static/staticres/plugins/ol-ext/control/layerswitchercontrol.css'}" type="text/css">
+	
+<title></title>
+</head>
+<body>
+	<div id="map">
+        
+    </div>
+    <input type="hidden" th:value="${map.latitude}" th:id="latitude">
+    <input type="hidden" th:value="${map.longitude}" th:id="longitude">
+<script th:src="@{'/static/staticres/js/jquery-2.2.3.min.js'}"></script>
+<script th:src="@{'/static/staticres/ol6.3/ol.js'}"></script>
+<script th:src="@{'/static/staticres/ol3source/ol.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/ol-ext/style/settextpathstyle.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/ol-ext/control/layerswitchercontrol.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/ol-ext/control/controlbar.js'}"></script>
+<script th:src="@{'/static/staticres/plugins/ol3-measuretool-master/measuretool.js'}"></script>
+<script type="text/javascript" th:src="@{'/static/staticres/plugins/ol-ext/control/buttoncontrol.js'}"></script>  
+<script type="text/javascript" th:src="@{'/static/staticres/plugins/ol-ext/control/togglecontrol.js'}"></script>  
+<script type="text/javascript">
+	var latitude = $('#latitude').val();
+	var longitude = $('#longitude').val();
+	latitude = parseFloat(latitude);
+	longitude = parseFloat(longitude);
+	var getSelectedAreaText = function(feature, resolution) {
+		var text = feature.get('name');
+		var originFeature = vectorAxis.getSource().getFeatureById('coordinate_origin');
+		if (originFeature != null && feature.get('type')=='cs') {
+			var sourceProj = map.getView().getProjection();
+			var c1 = ol.proj.transform(originFeature.getGeometry().getCoordinates(), sourceProj, 'EPSG:4326');
+			var c2 = ol.proj.transform(feature.getGeometry().getCoordinates(), sourceProj, 'EPSG:4326');
+			var c2x = [c2[0], c1[1]];
+			var c2y = [c1[0], c2[1]];
+			var x = wgs84Sphere.haversineDistance(c1, c2x);
+			var y = wgs84Sphere.haversineDistance(c1, c2y);
+			if (c1[0]>c2[0]) {x=-x;}
+			if (c1[1]>c2[1]) {y=-y;}
+			text = text +'\r\n('+x.toFixed(4)+','+y.toFixed(4)+')';
+		}
+		return text;
+	};
+
+	function selectedAreaStyleFunction(feature, resolution) {
+    	return new ol.style.Style({
+			image: new ol.style.Icon({
+          		src: clockSourceIconURL,
+          		scale: map.getView().getZoom() / 22
+        		}),
+        	stroke: new ol.style.Stroke({
+                	color: 'red',
+                	width: 2
+              		}),
+    		fill: new ol.style.Fill({
+                	color: 'rgba(255, 0, 0, 0.1)'
+              		}),      	
+    	});
+	}
+    
+	//== 区域选择器
+    var selectArea = new ol.interaction.Select({
+			style: selectedAreaStyleFunction,
+    		filter: function(feature, layer){
+            	return layer === vectorAreas;
+        	}
+    	});
+    selectArea.setActive(false);							// select 平时不激活
+    var selectedArea = selectArea.getFeatures();				// 这是选中的 features
+    var modifyArea = new ol.interaction.Modify({
+      features: selectedArea
+    });
+    modifyArea.setActive(false);							// modify 平时不激活
+    modifyArea.on('modifyend', function(e) {
+    	var features = selectArea.getFeatures();
+    	var feature = features.getArray()[0];
+    	var areaName = feature.getProperties().name;
+    	var geometry = feature.getGeometry();
+    	var coordinates = geometry.getCoordinates()[0];
+    	var str='';
+    	for (var i=0; i<coordinates.length; i++) {
+    		str = str + 'dot'+i+': ('+coordinates[i][0]+','+coordinates[i][1]+') ';
+    	}
+      });
+
+    function selectedAnchorStyleFunction(feature, resolution) {
+      return new ol.style.Style({
+		image: new ol.style.Icon({
+            src: anchorIconURL,
+            scale: map.getView().getZoom() / 20
+          }),
+      });
+    }
+    	
+    var selectAnchor = new ol.interaction.Select({
+    		style: selectedAnchorStyleFunction,
+    		filter: function(feature, layer){
+            	return layer === vectorAnchors;
+        	}
+    	});
+    selectAnchor.setActive(false);							// select 平时不激活
+    var selectedAnchor = selectAnchor.getFeatures();				// 这是选中的 features
+    var modifyAnchor = new ol.interaction.Modify({
+      features: selectedAnchor
+    });
+    modifyAnchor.setActive(false);							// modify 平时不激活
+    modifyAnchor.on('modifyend', function(e) {
+    	var features = selectAnchor.getFeatures();
+    	var feature = features.getArray()[0];
+    	var areaName = feature.getProperties().name;
+    	var geometry = feature.getGeometry();
+    	var coordinates = geometry.getCoordinates()[0];
+    	var str='';
+    	for (var i=0; i<coordinates.length; i++) {
+    		str = str + 'dot'+i+': ('+coordinates[i][0]+','+coordinates[i][1]+') ';
+    	}
+      });
+	//添加测试距离工具
+	var MeasureTool = new ol.control.MeasureTool({
+		        sphereradius : 6378137,//sphereradius
+		      });
+	//添加移动鼠标显示地图经纬度功能
+	var mouseControl = new ol.control.MousePosition({
+		coordinateFormat: ol.coordinate.createStringXY(8),
+		projection: 'EPSG:4326'});
+	//层切换按钮
+	var switcher = new ol.control.LayerSwitcher({target:$(".layerSwitcher").get(0), 
+		show_progress:false,
+		extent: false,
+		trash: false
+	});
+	//主按钮
+	var mainbar = new ol.control.Bar();
+	mainbar.setPosition("top");
+	//编辑
+	var editbar = new ol.control.Bar({	toggleOne: true,	// one control active at the same time
+		group:false			// group controls together
+	});
+	mainbar.addControl(editbar);
+	//编辑按钮
+	var btnAreaEdit = new ol.control.Toggle({	
+					html: '编',
+					title: '编辑区域',
+					id: '100px',
+					onToggle: function(e) {
+			        	selectArea.getFeatures().clear();
+			        	selectAnchor.getFeatures().clear();
+			        	selectAnchor.setActive(! e);
+				        modifyAnchor.setActive(! e);
+				        selectArea.setActive(e);
+				        modifyArea.setActive(e);
+					}
+				});
+	editbar.addControl(btnAreaEdit);
+	//保存
+	var save = new ol.control.Button({
+		html : '存',
+		title : "保存",
+		handleClick : function(e) {
+			var json = '';
+			json = new ol.format.GeoJSON().writeFeatures(vectorAreas.getSource().getFeatures(), {featureProjection : 'EPSG:3857',dataProjection : 'EPSG:4326'});
+			saveGeoJson(json)
+		}
+	});
+	mainbar.addControl(save);
+	// 加一个刷新 按钮
+	var btnReloadAnchors = new ol.control.Button(
+				{
+					
+					html: '刷',
+					title: "刷新",
+					handleClick: function(e)
+					{ 
+						  //刷新区域
+						  var sourceArea = vectorAreas.getSource();
+						  var formatArea = new ol.format.GeoJSON();
+						  var urlArea = sourceArea.getUrl();	//+'?t=' + now;
+						  var loaderArea = ol.featureloader.xhr(urlArea, formatArea);
+						  sourceArea.clear();
+						  loaderArea.call(sourceArea, [], 1, 'EPSG:3857');
+					}
+				});
+		mainbar.addControl(btnReloadAnchors);
+	//初始化地图
+	function Map() {
+	    this.map = new ol.Map({
+	    	controls: ol.control.defaults().extend([
+	            new ol.control.FullScreen(),
+	            new ol.control.OverviewMap(),
+	            new ol.control.ScaleLine(),
+	            new ol.control.ZoomSlider(),
+	            new ol.control.ZoomToExtent()
+	        ]),
+	        target: 'map',
+	        view: new ol.View({
+	            center: [0, 0],
+	            zoom: 15
+	        })
+	    });
+	    this.map.addControl(mainbar);
+	    this.map.addControl(switcher);
+	    this.map.addControl(MeasureTool);
+	    this.map.addControl(mouseControl);
+	    this.controls;
+	    this.tileLayer;
+	    this.vectorLayer;
+	    this.vectorSource;
+	    this.imageLayer;
+	    this.imageSource;
+	}
+	Map.prototype = {
+	    constructor: Map,
+	    initialize: function () {
+	        this.initTileLayer();
+	        //this.initMousePositionControl();
+	        this.initVectorLayer();
+	        this.initImageLayer();
+	        this.addXY();
+	    },
+	    //初始化版权和地址
+	    initTileLayer: function (options) {
+	        this.tileLayer = new ol.layer.Tile({
+	            source: new ol.source.XYZ({
+	                attributions: new ol.Attribution({
+	                    html: "<a href='http://www.jlrtls.com/'>&copy; 旌霖科技</a>"
+	                }),
+	                //url: 'http://www.google.cn/maps/vt?lyrs=y@802&gl=cn&x={x}&y={y}&z={z}'
+	               	url:"http://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
+	            })
+	        });
+	        this.map.addLayer(this.tileLayer);
+	        var center = ol.proj.fromLonLat([parseFloat(longitude), parseFloat(latitude)]);
+	        var view = this.map.getView();
+	        view.setCenter(center);
+	    },
+	   //初始化鼠标位置
+	    initMousePositionControl: function () {
+	        var mousePositionControl = new ol.control.MousePosition({
+	            coordinateFormat: ol.coordinate.createStringXY(6),
+	            projection: 'EPSG:4326',
+	            className: 'custom-mouse-position',
+	            target: document.getElementById('mouse-position'),
+	            undefinedHTML: '&nbsp'
+	        });
+	        this.map.addControl(mousePositionControl);
+	    },
+	   
+	    initVectorLayer: function () {
+	        this.vectorSource = new ol.source.Vector({
+	            wrapX: false //不在地图上重复
+	        });
+	        this.vectorLayer = new ol.layer.Vector({
+	            source: this.vectorSource,
+	            style: new ol.style.Style({ //默认样式
+	                fill: new ol.style.Fill({
+	                    color: 'rgba(255, 204, 51, 0.5)'
+	                }),
+	                stroke: new ol.style.Stroke({
+	                    color: '#ffcc33',
+	                    width: 0
+	                }),
+	                image: new ol.style.Circle({
+	                    radius: 7,
+	                    fill: new ol.style.Fill({
+	                        color: '#ffcc33'
+	                    })
+	                })
+	            })
+	        });
+	        this.map.addLayer(this.vectorLayer);
+	    },
+	    //初始化图层
+	    initImageLayer: function (extent) {
+	        this.imageLayer = new ol.layer.Image({
+	            // source: this.imageSource
+	        })
+	        this.map.addLayer(this.imageLayer);
+	    },
+	    //添加坐标轴
+	    addXY: function () {
+	    	//坐标轴
+	    	var getAxisText = function(feature, resolution) {
+	    	    var text = feature.get('name');
+	    	    return text;
+	    	  };
+	    	  
+	    	var createAxisTextStyle = function(feature, resolution) {
+	    	  var align = "center";
+	    	  var baseline = "middle";
+	    	  var size = "14px";
+	    	  var offsetX = 0;
+	    	  var offsetY = 50;
+	    	  var weight = "bold";		// normal
+	    	  var rotation = 0;
+	    	  var font = weight + ' ' + size + ' ' + 'Arial';
+	    	  var fillColor = "#FF0000";
+	    	  var outlineColor = "#FFFFFF";
+	    	  var outlineWidth = 6;
+
+	    	  return new ol.style.Text({
+	    	    textAlign: align,
+	    	    textBaseline: baseline,
+	    	    font: font,
+	    	    text: getAxisText(feature, resolution),
+	    	    fill: new ol.style.Fill({color: fillColor}),
+	    	    stroke: new ol.style.Stroke({color: outlineColor, width: outlineWidth}),
+	    	    offsetX: offsetX,
+	    	    offsetY: offsetY,
+	    	    rotation: rotation
+	    	  });
+	    	};
+
+	    	function axisStyleFunction(feature, resolution) {
+	    	return [new ol.style.Style({
+	    	  stroke: new ol.style.Stroke({
+	    	    color: 'green',
+	    	    width: 4
+	    	  })
+	    	})];
+	    	}
+
+	    	//坐标轴的数据
+	    	var vectorAxis = new ol.layer.Vector({
+	    			title: "坐标轴",  
+	    			source: new ol.source.Vector({
+	    				   url:'json_coordinate_axis.do',
+	    	  			format: new ol.format.GeoJSON()
+	    				}),
+	    			style: axisStyleFunction
+	    		});
+
+	    	vectorAxis.setTextPathStyle(function (f)
+	    			{	return [ new ol.style.Style(
+	    				{	text: new ol.style.TextPath(
+	    					{	text: f.get("name"),
+	    						font: "bold 15px Arial",
+	    						fill: new ol.style.Fill ({ color:"#FF0000" }),
+	    						stroke: new ol.style.Stroke({ color:"#FFFFFF", width:6 }),
+	    						textBaseline: "middle",
+	    						textAlign: "center",
+	    						rotateWithView: false,
+	    						textOverflow: "visible",
+	    						minWidth: 2
+	    					})
+	    				})]
+	    			}, 
+	    			3);    
+	        this.map.addLayer(vectorAxis);
+	    },
+	    //添加图片
+	    addImage: function (extent, url) {
+	        var imageExtent = extent;
+	        this.imageSource = new ol.source.ImageStatic({
+	            url: url,
+	            projection: 'EPSG:3857',
+	            imageExtent: ol.proj.transformExtent(imageExtent, 'EPSG:4326', 'EPSG:3857')
+	        })
+	        this.imageLayer.setSource(this.imageSource);
+	    },
+	    //添加自定义按钮
+	    addButton: function(title, html){
+	    	var btn = new ol.control.Button({
+	    		html:html,
+	    		title:title,
+	    	});
+	    	this.map.addControl(btn);
+	    },
+	}
+
+	var map = new Map();
+	map.initialize();
+	//加载图片
+function addImage(extent, url) {
+	   map.addImage(extent, url);
+}
+addImage([parseFloat(longitude)-0.5, parseFloat(latitude)-0.5, parseFloat(longitude)+0.5, parseFloat(latitude)+0.5], "../static/upload/"+'[[${map.fileName}]]');
+
+
+
+
+</script> 
+</body>
+</html>
