@@ -52,5 +52,5 @@ public interface AreaService {
 	 * @param areaName
 	 * @return
 	 */
-	public List<Area> getAreaByName(String areaName);
+	public List<Area> findAllByName(String areaName);
 }

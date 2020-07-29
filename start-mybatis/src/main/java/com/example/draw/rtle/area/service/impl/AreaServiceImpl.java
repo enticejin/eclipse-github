@@ -83,7 +83,7 @@ public class AreaServiceImpl implements AreaService {
 	}
 
 	@Override
-	public List<Area> getAreaByName(String areaName) {
+	public List<Area> findAllByName(String areaName) {
 		return areaMapper.findByAreaName(areaName);
 	}
 

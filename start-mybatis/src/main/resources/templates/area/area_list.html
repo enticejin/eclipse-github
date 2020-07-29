@@ -17,7 +17,7 @@
   <legend>区域表格</legend>
 </fieldset>
 		<div>
-	<form action="areaList" method="post" name="Form" id="Form">
+	<form action="#" method="post" name="Form" id="Form">
 			<div class="layui-inline">
 				<table>
 					<tr>
@@ -118,7 +118,8 @@
 		<input type="hidden" th:value="${rtle.logitude}" th:name="longitude" th:id="longitude" maxlength="32">
 		<input type="hidden" th:value="${rtle.latitude}" th:name="latitude" th:id="latitude" maxlength="32">
 	</div>		
-	<table id="dates" lay-filter="test"></table>
+	<table th:if="${flag} == 'area'"  id="dates" lay-filter="test"></table>
+	<table  th:if="${flag} == 'select'" id="selectdates" lay-filter="selecttest"></table>
 <button type="button" class="layui-btn layui-btn-normal" onclick="add()">添加区域</button>
 <script th:src="@{'/static/staticres/test/jquery.js'}"></script>
 <script th:src="@{'/static/staticres/layui/layui.js'}"></script>
@@ -127,6 +128,7 @@
 <script th:src="@{'/static/staticres/plugins/attention/zDialog/zDialog.js'}"></script>
 <script th:src="@{'/static/staticres/bootstrap/js/bootstrap.js'}"></script>
 <script type="text/javascript">
+if("[[${flag}]] == 'area'"){
 	layui.use('table', function(){
 	    var table = layui.table;
 	    	table.render({
@@ -181,23 +183,71 @@
 	            }
 	        });        
 	    });
+}
+//查找页面
+if("[[${flag}]] == 'select'"){
+	layui.use('table', function(){
+	    var table = layui.table;
+	    	table.render({
+	            elem: '#selectdates'
+	            ,url:'/area/selectAreas?areaName='+'[[${areaName}]]'
+	            ,limit:5 //默认为10
+	            ,cols: [
+	            	
+	            	[
+	                {field:'areaName', width:170, title: '区域名称', sort: true} //sort：true页面可进行排序操作
+	                ,{field:'areaWide', width:400, title: '区域维度'}
+	                ,{field:'clockName',width:170,  title: '时钟源'}
+	                ,{field:'action',width:170,  title: '是否激活'}
+	                ,{field:'remarks',width:170,  title: '备注'}
+	                ,{field:'level',width:500, height:50, title: '操作',templet: function(d){
+	                    //return'<a id="delete" class="layui-btn layui-btn-xs layui-btn-danger" onclick="deleteFile('+d.id+');">删除</a> ';
+	                    return '<button type="button" onclick="gotoAreaEditOnMap('+d.id+');" class="layui-btn layui-btn-normal">配置地图</button><button type="button" class="layui-btn layui-btn-normal layui-btn-sm"><i class="layui-icon" onclick="copy('+d.id+');"></i></button><div class="layui-btn-group"><button type="button" class="layui-btn layui-btn-sm"><i class="layui-icon" onclick="edit('+d.id+');"></i></button><button type="button" class="layui-btn layui-btn-sm"><i class="layui-icon" onclick="del('+d.id+');"></i></button></div>'
+	                   }
+	                }
+	            	]
+	            	
+	            		]
+	            ,page: true
+	            ,limits:[5,10,15,20]
+	            ,done:function(res, curr, count){
+	                //数据的回调用，可不写
+	                //区域纬度
+	            	$("[data-field='areaWide']").each(function(){
+	            	   　　if($(this).text()=='1'){
+	            	      　　$(this).text("一维")
+	            	      　　$(this).width("56px")
+	            	      }else if($(this).text()=='2'){
+	            	         $(this).text("二维")
+	            	      }else if($(this).text()=='3')
+	            	    	  $(this).text("三维") 
+	            	    	else{
+	            	    		 $(this).text("区域维度")
+	            	    	}
+	            	   });
+	                //是否激活
+	            	$("[data-field='action']").each(function(){
+	           	   　　if($(this).text()=='true'){
+	           	      　　$(this).text("是")
+	           	      　　$(this).width("56px")
+	           	      }else if($(this).text()=='false'){
+	           	         $(this).text("否")
+	           	      }
+	           	    	else{
+	           	    		 $(this).text("是否激活")
+	           	    	}
+	           	   });
+	            }
+	        });        
+	    });
+}
 //查询
 function query(){
 	var areaName = $("#nav-search-input").val();
-	if(areaName == null || areaName.trim().length == 0){
-		Dialog.alert("输入信息有误");
+	if(areaName.trim().length == 0){
+		Dialog.confirm("输入区域名称不能为空！");
 	}else{
-		$.ajax({
-			type:"GET",
-			url:"select?areaName="+areaName,
-			success:function(data){
-				if(data.msg == "success"){
-					window.location.href="areaList?ids="+data.ids;
-				}else if(data.msg== "fail"){
-					Dialog.alert("没有找到对应的区域");
-				}
-			}
-		});
+		window.location.href="select?areaName="+areaName;
 	}
 }
 //删除区域
